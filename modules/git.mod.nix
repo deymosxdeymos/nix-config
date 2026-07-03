@@ -18,7 +18,6 @@
         init.defaultBranch = "main";
         pull.rebase = true;
         rebase.autoStash = true;
-        diff.tool = "difftastic";
 
         fetch.fsckObjects = true;
         receive.fsckObjects = true;
