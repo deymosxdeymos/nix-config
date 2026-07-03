@@ -2,6 +2,7 @@
   flake.homeModules.jujutsu =
     {
       self,
+      config,
       lib,
       pkgs,
       ...
@@ -80,24 +81,57 @@
         aliases.sh = [ "show" ];
         aliases.u = [ "undo" ];
 
+        aliases.fork = [
+          "util"
+          "exec"
+          "--"
+          (pkgs.writeScript "jj-fork" /* nu */ ''
+            #!${getExe pkgs.nushell}
+            #
+
+            gh repo fork --remote
+            gh repo set-default upstream
+
+            let trunk = jj --ignore-working-copy config get 'revset-aliases."trunk()"'
+            jj --ignore-working-copy config set --repo 'revset-aliases."trunk()"' ($trunk | str replace "origin" "upstream")
+
+            jj git fetch
+
+            jj bookmark track ($trunk | split row "@" | first) --remote upstream
+            jj bookmark track ($trunk | split row "@" | first) --remote origin
+          '')
+        ];
+
+        revsets.bookmark-advance-to = ''
+          heads(::@ & ~description(exact:"") & (~empty() | merges()))
+        '';
+
         revsets.log = ''
           present(@) | present(trunk()) | ancestors(remote_bookmarks().. | @.., 8)
         '';
 
         ui.default-command = "log";
-        ui.diff-formatter = [
-          "difft"
-          "--color=always"
-          "$left"
-          "$right"
-        ];
+
+        ui.diff-editor = ":builtin";
         ui.pager = [
           (getExe pkgs.bash)
           "-c"
           "exec \${PAGER:-less}"
         ];
         ui.conflict-marker-style = "snapshot";
-        ui.graph.style = "curved";
+        ui.graph.style = if config.theme.cornerRadius > 0 then "curved" else "square";
+
+        templates.draft_commit_description = ''
+          concat(
+            coalesce(description, "\n"),
+            surround(
+              "\nJJ: This commit contains the following changes:\n", "",
+              indent("JJ:     ", diff.stat(72)),
+            ),
+            "\nJJ: ignore-rest\n",
+            diff.git(),
+          )
+        '';
 
         templates.git_push_bookmark = ''
           "deymosxdeymos/change-" ++ change_id.short()
@@ -108,6 +142,10 @@
           push-new-bookmarks = true;
         };
 
+        git.fetch = [
+          "origin"
+          "upstream"
+        ];
         git.push = "origin";
         git.sign-on-push = true;
 
