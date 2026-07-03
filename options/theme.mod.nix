@@ -26,16 +26,23 @@ let
         inputs.themes.custom (
           inputs.themes.raw.gruvbox-dark-hard
           // {
+            cornerRadius = 4;
+            borderWidth = 2;
+
+            margin = 0;
             padding = 8;
 
             font.size.normal = 12;
             font.size.big = 16;
 
+            font.sans.name = "Lexend";
+            font.sans.package = pkgs.lexend;
+
             font.mono.name = "JetBrainsMono Nerd Font";
             font.mono.package = pkgs.nerd-fonts.jetbrains-mono;
 
-            font.sans.name = "Lexend";
-            font.sans.package = pkgs.lexend;
+            icons.name = "Gruvbox-Plus-Dark";
+            icons.package = pkgs.gruvbox-plus-icons;
           }
         )
       );
