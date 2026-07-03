@@ -4,82 +4,6 @@ let
 
   mkNixs = pkgs: self.packages.${pkgs.stdenv.hostPlatform.system}.nixs;
 
-  allowed.commands = [
-    "rg*"
-    "ls*"
-
-    "jj bookmark list*"
-    "jj config get*"
-    "jj config list*"
-    "jj config path*"
-    "jj diff*"
-    "jj evolog*"
-    "jj file annotate*"
-    "jj file list*"
-    "jj file search*"
-    "jj file show*"
-    "jj file track*"
-    "jj git colocation status*"
-    "jj git remote list*"
-    "jj git root*"
-    "jj help*"
-    "jj interdiff*"
-    "jj log*"
-    "jj op diff*"
-    "jj op log*"
-    "jj op show*"
-    "jj operation diff*"
-    "jj operation log*"
-    "jj operation show*"
-    "jj resolve --list"
-    "jj root*"
-    "jj show*"
-    "jj sparse list*"
-    "jj st*"
-    "jj status*"
-    "jj tag list*"
-    "jj util completion*"
-    "jj util config-schema*"
-    "jj util markdown-help*"
-    "jj version*"
-    "jj workspace list*"
-    "jj workspace root*"
-
-    "gh auth status*"
-    "gh cache list*"
-    "gh gist list*"
-    "gh gist view*"
-    "gh issue list*"
-    "gh issue status*"
-    "gh issue view*"
-    "gh label list*"
-    "gh pr checks*"
-    "gh pr diff*"
-    "gh pr list*"
-    "gh pr status*"
-    "gh pr view*"
-    "gh release list*"
-    "gh release view*"
-    "gh repo list*"
-    "gh repo view*"
-    "gh ruleset check*"
-    "gh ruleset list*"
-    "gh ruleset view*"
-    "gh run list*"
-    "gh run view*"
-    "gh search *"
-    "gh status*"
-    "gh variable get*"
-    "gh variable list*"
-    "gh workflow list*"
-    "gh workflow view*"
-
-    "cargo clippy*"
-    "cargo nextest*"
-
-    "nixs *"
-  ];
-
   forbidden.commands = [
     {
       command = "git*";
@@ -109,11 +33,6 @@ let
       - ${instruction}
     '')
     |> concatLines;
-
-  allowed.paths = [
-    "/etc/profiles"
-    "/nix/store"
-  ];
 in
 {
   flake.homeModules.opencode =
@@ -139,23 +58,10 @@ in
         instructions = singleton "${pkgs.writeText "instructions.md" instructions}";
 
         permission = {
-          "*" = "ask";
-          codesearch = "allow";
-          external_directory = genAttrs (map (path: "${path}/**") allowed.paths) (const "allow");
-          glob = "allow";
-          grep = "allow";
-          list = "allow";
-          lsp = "allow";
-          read = "allow";
-          task = "allow";
-          todoread = "allow";
-          todowrite = "allow";
-          webfetch = "allow";
-          websearch = "allow";
+          "*" = "allow";
 
           bash =
             { }
-            // genAttrs allowed.commands (const "allow")
             // genAttrs (forbidden.commands |> map ({ command, ... }: command)) (const "deny");
         };
       };
@@ -175,7 +81,6 @@ in
       ...
     }:
     let
-      inherit (lib.attrsets) genAttrs;
       inherit (lib.strings)
         concatMapStringsSep
         removeSuffix
@@ -183,7 +88,6 @@ in
         toJSON
         trim
         ;
-      inherit (lib.trivial) const;
     in
     {
       packages = [
@@ -198,7 +102,8 @@ in
       xdg.config.files."codex/config.toml".type = "copy";
       xdg.config.files."codex/config.toml".generator = pkgs.writers.writeTOML "codex-config.toml";
       xdg.config.files."codex/config.toml".value = {
-        approval_policy = "on-request";
+        # YOLO: never prompt for approval.
+        approval_policy = "never";
         check_for_update_on_startup = false;
         commit_attribution = "";
         developer_instructions = instructions;
@@ -209,13 +114,9 @@ in
         permissions.default = {
           extends = ":workspace";
 
-          filesystem = {
-            ":root" = "deny";
-            ":minimal" = "read";
-            ":workspace_roots"."." = "write";
-            ":workspace_roots".".git" = "write";
-          }
-          // genAttrs allowed.paths (const "read");
+          # Full filesystem read/write; forbidden commands are still blocked
+          # via the prefix_rule()s in rules/default.rules.
+          filesystem.":root" = "write";
 
           network.enabled = true;
           network.domains."*" = "allow";
@@ -223,28 +124,10 @@ in
       };
 
       xdg.config.files."codex/rules/default.rules".text =
-        (
-          forbidden.commands
-          |> concatMapStringsSep "\n" (
-            { command, justification }:
-            /* starlark */ ''
-              prefix_rule(
-                  pattern = ${
-                    command
-                    |> removeSuffix "*"
-                    |> trim
-                    |> splitString " "
-                    |> toJSON
-                  },
-                  decision = "forbidden",
-                  justification = ${toJSON justification},
-              )
-            ''
-          )
-        )
-        + (
-          allowed.commands
-          |> concatMapStringsSep "\n" (command: /* starlark */ ''
+        forbidden.commands
+        |> concatMapStringsSep "\n" (
+          { command, justification }:
+          /* starlark */ ''
             prefix_rule(
                 pattern = ${
                   command
@@ -253,9 +136,10 @@ in
                   |> splitString " "
                   |> toJSON
                 },
-                decision = "allow",
+                decision = "forbidden",
+                justification = ${toJSON justification},
             )
-          '')
+          ''
         );
     };
 
@@ -475,24 +359,31 @@ in
 
         cleanupPeriodDays = 365 * 1000;
 
-        permissions.allow =
-          [ ]
-          ++ map (cmd: "Bash(${cmd})") allowed.commands
-          ++ map (path: "Read(${path}/**)") allowed.paths
-          ++ [
-            "Glob"
-            "Grep"
-            "LSP"
-            "WebFetch"
-            "WebSearch"
-            "TaskCreate"
-            "TaskUpdate"
-            "TaskGet"
-            "TaskList"
-            "TaskOutput"
-            "TaskStop"
-          ];
-        permissions.deny = [ ] ++ map ({ command, ... }: "Bash(${command})") forbidden.commands;
+        # Default to auto mode: the auto-classifier auto-approves safe actions
+        # and routes risky ones (subagent spawn, cron, remote triggers) through
+        # classifier review. Its feature gate is hardcoded on (buildGate:()=>!0),
+        # so it works with telemetry off. Bare tool names below pre-allow the
+        # rest; `deny` still wins over `allow`, so forbidden commands stay
+        # blocked, and auto mode honors those deny rules too.
+        permissions.defaultMode = "auto";
+        permissions.allow = [
+          "Bash"
+          "Edit"
+          "Write"
+          "Read"
+          "Glob"
+          "Grep"
+          "LSP"
+          "WebFetch"
+          "WebSearch"
+          "TaskCreate"
+          "TaskUpdate"
+          "TaskGet"
+          "TaskList"
+          "TaskOutput"
+          "TaskStop"
+        ];
+        permissions.deny = map ({ command, ... }: "Bash(${command})") forbidden.commands;
 
         env.CLAUDE_BASH_NO_LOGIN = "1";
         env.CLAUDE_CODE_EAGER_FLUSH = "1";
