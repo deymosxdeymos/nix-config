@@ -8,10 +8,9 @@
     let
       json = pkgs.formats.json { };
 
-      chromiumExtension =
-        id: "${id};https://clients2.google.com/service/update2/crx";
-
-      ublockId = "cjpalhdlnbpafiamejdnhcphjbkeiagm";
+      # Helium ships its own uBlock build; keep it out of the forcelist and drive
+      # it through policy under this preinstalled id, not the Web Store id.
+      ublockId = "blockjmkbacgjkknlgpkjjiijinjdanf";
       bitwardenId = "nngceckbapebfimnlniiiahkandclblb";
 
       # UNSLOP
@@ -25,7 +24,6 @@
       kagiId = "cdglnehniifkbagbbombnjghhcihifij";
 
       forceInstalledIds = [
-        ublockId
         bitwardenId
         darkReaderId
         sponsorBlockId
@@ -68,7 +66,7 @@
 
         ExtensionInstallAllowlist = forceInstalledIds;
 
-        ExtensionInstallForcelist = map chromiumExtension forceInstalledIds;
+        ExtensionInstallForcelist = forceInstalledIds;
 
         ExtensionInstallSources = [
           "https://services.helium.imput.net/*"
