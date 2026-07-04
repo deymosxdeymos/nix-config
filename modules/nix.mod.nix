@@ -25,6 +25,13 @@
         "pipe-operators"
       ];
 
+      # Open more parallel connections to substituters so prebuilt binaries
+      # download faster on this bandwidth-over-cores machine. Once a remote
+      # builder is configured, let it fetch from caches instead of streaming
+      # everything back through here.
+      nix.settings.http-connections = 50;
+      nix.settings.builders-use-substitutes = true;
+
       # nh wraps nixos-rebuild with nicer output; point it at this flake.
       programs.nh = {
         enable = true;
