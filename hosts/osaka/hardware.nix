@@ -16,11 +16,9 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.supportedFilesystems = [ "bcachefs" ];
 
-  boot.loader.grub = {
-    enable = true;
-    devices = [ "/dev/vda" ];
-    efiSupport = false;
-  };
+  # disko already points GRUB at /dev/vda via the EF02 partition; just enable it.
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport = false;
 
   boot.loader.timeout = 2;
 }
