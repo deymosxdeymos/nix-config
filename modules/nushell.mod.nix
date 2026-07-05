@@ -7,7 +7,7 @@
       ...
     }:
     let
-      inherit (lib.meta) getExe;
+      inherit (lib.meta) getExe getExe';
       inherit (lib.modules) mkBefore;
     in
     {
@@ -58,8 +58,16 @@
           pstree = "${getExe pkgs.pstree} -g 3";
         };
 
-        extraConfig = ''
+        extraConfig = /* nu */ ''
           ulimit --file-descriptor-count hard
+
+          if ($env.SSH_AUTH_SOCK? | is-empty) {
+            let ssh_agent_socket = (^${getExe pkgs.bash} -c 'for sock in "$HOME"/.ssh/agent/*; do SSH_AUTH_SOCK="$sock" ${getExe' pkgs.openssh "ssh-add"} -L >/dev/null 2>&1 && printf "%s\n" "$sock" && exit 0; done')
+
+            if ($ssh_agent_socket | is-not-empty) {
+              $env.SSH_AUTH_SOCK = $ssh_agent_socket
+            }
+          }
 
           $env.config.table.missing_value_symbol = $"(ansi magenta_bold)nope(ansi reset)"
 

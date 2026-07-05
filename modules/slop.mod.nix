@@ -1,4 +1,9 @@
-{ self, lib, ... }:
+{
+  inputs,
+  self,
+  lib,
+  ...
+}:
 let
   inherit (lib.strings) concatLines;
 
@@ -60,9 +65,7 @@ in
         permission = {
           "*" = "allow";
 
-          bash =
-            { }
-            // genAttrs (forbidden.commands |> map ({ command, ... }: command)) (const "deny");
+          bash = { } // genAttrs (forbidden.commands |> map ({ command, ... }: command)) (const "deny");
         };
       };
 
@@ -352,6 +355,28 @@ in
 
       xdg.config.files."claude-code/CLAUDE.md".text = instructions;
 
+      xdg.config.files."claude-code/plugins/known_marketplaces.json".type = "copy";
+      xdg.config.files."claude-code/plugins/known_marketplaces.json".generator = toJSON { };
+      xdg.config.files."claude-code/plugins/known_marketplaces.json".value = {
+        claude-plugins-official = {
+          source.source = "github";
+          source.repo = "anthropics/claude-plugins-official";
+          installLocation = "${config.directory}/.config/claude-code/plugins/marketplaces/claude-plugins-official";
+          lastUpdated = "9999-01-01T00:00:00.000Z";
+        };
+
+        cursor-plugins-claude = {
+          source.source = "github";
+          source.repo = "kdoroszewicz/cursor-plugins-claude";
+          installLocation = "${config.directory}/.config/claude-code/plugins/marketplaces/cursor-plugins-claude";
+          lastUpdated = "9999-01-01T00:00:00.000Z";
+        };
+      };
+
+      xdg.config.files."claude-code/plugins/marketplaces/cursor-plugins-claude".type = "copy";
+      xdg.config.files."claude-code/plugins/marketplaces/cursor-plugins-claude".source =
+        inputs.cursor-plugins-claude;
+
       xdg.config.files."claude-code/settings.json".type = "copy"; # Slop tries to write to the config directory :/.
       xdg.config.files."claude-code/settings.json".generator = toJSON { };
       xdg.config.files."claude-code/settings.json".value = {
@@ -428,9 +453,8 @@ in
         enabledPlugins."clangd-lsp@claude-plugins-official" = true;
         enabledPlugins."code-review@claude-plugins-official" = true;
         enabledPlugins."code-simplifier@claude-plugins-official" = true;
-        enabledPlugins."kotlin-lsp@claude-plugins-official" = true;
         enabledPlugins."ralph-loop@claude-plugins-official" = true;
-        enabledPlugins."rust-analyzer-lsp@claude-plugins-official" = true;
+        enabledPlugins."thermos@cursor-plugins-claude" = true;
 
         # VISUAL UNSLOPS
         attribution.commit = "";
@@ -1030,6 +1054,25 @@ in
               }
             }
 
+            def ensure-user-mcp-config [] {
+              let config_dir = $env
+              | get --optional "CLAUDE_CONFIG_DIR"
+              | default ($env.HOME | path join ".config" "claude-code")
+
+              let state_file = $config_dir | path join ".claude.json"
+              mkdir $config_dir
+
+              let current = try { open $state_file } catch { {} }
+              let next = $current | upsert mcpServers.figma {
+                type: "http",
+                url: "https://mcp.figma.com/mcp",
+              }
+
+              if $next != $current {
+                $next | save --force $state_file
+              }
+            }
+
             def --wrapped main [--rebuild, ...arguments] {
               let cache = $env
               | get --optional "XDG_CACHE_HOME"
@@ -1133,6 +1176,8 @@ in
               r###'${
                 strings.toJSON config.xdg.config.files."claude-code/settings.json".value.env
               }'### | from json | load-env
+
+              ensure-user-mcp-config
 
               exec $binary_path ...$arguments
             }

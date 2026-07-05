@@ -23,6 +23,22 @@
         "type": "github"
       }
     },
+    "cursor-plugins-claude": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780758141,
+        "narHash": "sha256-VymJ/sXwyEjVY37Ou9sTjAjNoanYxYvaUt7lXu1FyJI=",
+        "owner": "kdoroszewicz",
+        "repo": "cursor-plugins-claude",
+        "rev": "37e5b44be6861c9228c718145cbfcda98cae8e8c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kdoroszewicz",
+        "repo": "cursor-plugins-claude",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -312,6 +328,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "cursor-plugins-claude": "cursor-plugins-claude",
         "disko": "disko",
         "flake-parts": "flake-parts",
         "helium": "helium",

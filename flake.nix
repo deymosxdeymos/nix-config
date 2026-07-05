@@ -57,6 +57,11 @@
       url = "github:NotAShelf/watt";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    cursor-plugins-claude = {
+      url = "github:kdoroszewicz/cursor-plugins-claude";
+      flake = false;
+    };
   };
 
   outputs =
