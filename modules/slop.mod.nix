@@ -1044,6 +1044,18 @@ in
               if not ($binary_path | path exists) or $rebuild {
                 let archive = $"($binary_path).tar.gz"
 
+                # A dropped/slow download leaves a truncated archive on disk.
+                # Since the download below is skipped whenever the archive path
+                # exists, a corrupt cache would otherwise wedge every --rebuild
+                # on the same failing extraction. Discard any archive that fails
+                # a gzip integrity check so it gets re-fetched cleanly.
+                if ($archive | path exists) and (
+                  do { ^${getExe pkgs.gnutar} --list --gzip --file $archive } | complete | get exit_code
+                ) != 0 {
+                  print --stderr $"(ansi yellow_bold)warn:(ansi reset) discarding corrupt cached tarball"
+                  rm --force $archive
+                }
+
                 if not ($archive | path exists) {
                   let platform = detect-platform
 
@@ -1052,6 +1064,7 @@ in
                     | save --force --raw $archive
                   } catch {
                     print --stderr $"(ansi yellow_bold)warn:(ansi reset) failed to download tarball"
+                    rm --force $archive
                     run-latest --cache $cache ...$arguments
                   }
                 }
@@ -1060,7 +1073,18 @@ in
                 rm --recursive --force $workdir
                 mkdir $workdir
 
-                ^${getExe pkgs.gnutar} --extract --gzip --file $archive --directory $workdir
+                # On any extraction failure drop the (likely corrupt) archive and
+                # workdir so the next run re-downloads instead of re-extracting
+                # the same bad bytes, then fall back to the last good binary.
+                let extracted = do {
+                  ^${getExe pkgs.gnutar} --extract --gzip --file $archive --directory $workdir
+                } | complete
+                if $extracted.exit_code != 0 {
+                  print --stderr $"(ansi yellow_bold)warn:(ansi reset) failed to extract tarball"
+                  rm --force $archive
+                  rm --recursive --force $workdir
+                  run-latest --cache $cache ...$arguments
+                }
                 rm $archive
 
                 let cli = $workdir | path join "cli.cjs"
