@@ -1,6 +1,7 @@
+{ inputs, ... }:
 {
   flake.nixosModules.hardware =
-    { ... }:
+    { pkgs, ... }:
     {
       # FIRMWARE
       hardware.enableRedistributableFirmware = true;
@@ -14,6 +15,25 @@
 
       services.watt = {
         enable = true;
+
+        # watt fans the charge-threshold delta out to EVERY power supply, and
+        # PowerSupply::apply hard-errors (propagated by `?`) on any that lacks
+        # the sysfs charge_control_*_threshold files — e.g. a plugged-in USB-C
+        # PD source (ucsi-source-psy-USBC000:*). That kills the daemon, which
+        # restart-loops into start-limit-hit and fails `nh os switch`. There's
+        # no config knob to scope the threshold to BAT0, so patch apply() to
+        # skip supplies that don't support charge thresholds instead of failing.
+        # TODO: upstream to NotAShelf/watt.
+        package =
+          inputs.watt.packages.${pkgs.stdenv.hostPlatform.system}.watt.overrideAttrs
+            (old: {
+              postPatch = (old.postPatch or "") + /* bash */ ''
+                substituteInPlace watt/power_supply.rs \
+                  --replace-fail \
+                    'pub fn apply(&self, power_supply: &mut PowerSupply) -> anyhow::Result<()> {' \
+                    'pub fn apply(&self, power_supply: &mut PowerSupply) -> anyhow::Result<()> { if power_supply.charge_threshold_path_start().is_none() { return Ok(()); }'
+              '';
+            });
 
         # This mirrors watt's upstream default ruleset verbatim (see the clone at
         # ~/Documents/clones/watt/watt/config.toml) so we keep its hardware-guarded
