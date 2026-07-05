@@ -653,10 +653,17 @@ in
             # --- AGENTS.md support ---
             # The CLAUDE.md loader only reads CLAUDE.md. Patch it to also load AGENTS.md
             # from the same directories. Pattern: let VAR=ME(DIR,"CLAUDE.md");ARR.push(...await XE(VAR,"Project",ARG,BOOL))
+            #
+            # There are TWO such loaders. The ancestor-walk one passes the last arg
+            # (includeExternal) as a variable, but the live per-directory loader (Rqt,
+            # driven by the startup `for(dir of dirs.reverse())` walk) inlines the
+            # boolean literal `!1`. Since 2.1.x minifies that arg to `!1`, the final
+            # group must allow an optional `!` or the primary loader is never matched
+            # and AGENTS.md silently never loads. Expect this to patch 2+ sites.
 
             agents_pat: bytes = (
               rb"let (" + W + rb")=(" + Q + rb")\((" + W + rb'),"CLAUDE\.md"\);'
-              rb"(" + W + rb")\.push\(\.\.\.await (" + W + rb")\(\1,\"Project\",(" + W + rb"),(" + W + rb")\)\)"
+              rb"(" + W + rb")\.push\(\.\.\.await (" + W + rb")\(\1,\"Project\",(" + W + rb"),(!?" + W + rb")\)\)"
             )
 
 
