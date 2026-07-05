@@ -17,6 +17,7 @@ in
 
     modules = attrValues self.nixosModules ++ [
       ./hardware-configuration.nix
+      ./remote-builder.nix
 
       # Generic, model-agnostic ThinkPad tuning. If you know the exact model,
       # swap these for a specific profile (e.g. lenovo-thinkpad-x1-...).
