@@ -33,6 +33,8 @@
           content = {
             type = "bcachefs";
             filesystem = "main";
+            # bcachefs format fails on an empty --label, so name the device.
+            label = "main.main0";
           };
         };
       };
