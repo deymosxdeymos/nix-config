@@ -33,22 +33,9 @@ in
   # no NetworkManager (static networking); declare the group so it resolves.
   users.groups.networkmanager = { };
 
-  # SSH
-  # Key-only. Host keys live on the persistent bcachefs volume so they survive
-  # the impermanence wipe (and give agenix a stable identity later).
+  # SSH — key-only.
   services.openssh.enable = true;
   services.openssh.settings.PasswordAuthentication = false;
-  services.openssh.hostKeys = [
-    {
-      path = "/persist/etc/ssh/ssh_host_ed25519_key";
-      type = "ed25519";
-    }
-    {
-      path = "/persist/etc/ssh/ssh_host_rsa_key";
-      type = "rsa";
-      bits = 4096;
-    }
-  ];
 
   users.users.root.openssh.authorizedKeys.keys = singleton self.keys.deymosxdeymos;
   users.users.cfactoryai.openssh.authorizedKeys.keys = singleton self.keys.deymosxdeymos;
@@ -93,23 +80,6 @@ in
   networking.interfaces.eth1.ipv4.addresses = singleton {
     address = "10.104.0.2";
     prefixLength = 20;
-  };
-
-  # IMPERMANENCE
-  # Root is a tmpfs wiped each boot; only these survive on the bcachefs /persist.
-  environment.persistence."/persist" = {
-    hideMounts = true;
-
-    directories = [
-      "/var/log"
-      "/var/lib/nixos"
-      "/var/lib/tailscale"
-      "/home"
-    ];
-
-    files = [
-      "/etc/machine-id"
-    ];
   };
 
   system.stateVersion = "26.05";

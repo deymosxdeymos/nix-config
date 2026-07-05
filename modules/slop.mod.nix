@@ -47,6 +47,8 @@ in
       inherit (lib.trivial) const;
       inherit (lib.attrsets) genAttrs;
       inherit (lib.lists) singleton;
+
+      opencodeAnthropicAuth = self.packages.${pkgs.stdenv.hostPlatform.system}.opencode-anthropic-auth;
     in
     {
       packages = [
@@ -68,6 +70,10 @@ in
           bash = { } // genAttrs (forbidden.commands |> map ({ command, ... }: command)) (const "deny");
         };
       };
+
+      xdg.config.files."opencode/plugins/opencode-anthropic-auth.js".text = /* js */ ''
+        export * from "file://${opencodeAnthropicAuth}/dist/index.js";
+      '';
 
       xdg.config.files."opencode/tui.json".generator = toJSON { };
       xdg.config.files."opencode/tui.json".value = {
