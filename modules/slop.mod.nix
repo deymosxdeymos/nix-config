@@ -5,7 +5,23 @@
   ...
 }:
 let
+  inherit (lib.meta) getExe';
   inherit (lib.strings) concatLines;
+
+  mkNpmLatest =
+    pkgs:
+    {
+      binary,
+      package,
+    }:
+    pkgs.writeScriptBin binary /* bash */ ''
+      #!${getExe' pkgs.bash "bash"}
+      # npm runs a package's postinstall as `sh -c 'node ...'`, so `node` must be
+      # on PATH or the script dies with 127 (opencode-ai ships such a postinstall
+      # that installs its native binary). Nothing else adds nodejs to PATH here.
+      export PATH="${pkgs.nodejs}/bin''${PATH:+:$PATH}"
+      exec "${getExe' pkgs.nodejs "npm"}" exec --yes --package "${package}@latest" -- "${binary}" "$@"
+    '';
 
   mkNixs = pkgs: self.packages.${pkgs.stdenv.hostPlatform.system}.nixs;
 
@@ -52,7 +68,10 @@ in
     in
     {
       packages = [
-        pkgs.opencode
+        (mkNpmLatest pkgs {
+          binary = "opencode";
+          package = "opencode-ai";
+        })
         (mkNixs pkgs)
       ];
 
@@ -100,7 +119,10 @@ in
     in
     {
       packages = [
-        pkgs.codex
+        (mkNpmLatest pkgs {
+          binary = "codex";
+          package = "@openai/codex";
+        })
         (mkNixs pkgs)
       ];
 
