@@ -1,9 +1,17 @@
-{ lib, ... }:
+{ inputs, lib, ... }:
 {
   perSystem =
-    { pkgs, ... }:
+    { system, ... }:
     let
       inherit (lib.licenses) unfree;
+
+      # self.packages is built by flake-parts' perSystem nixpkgs, which does not
+      # inherit the NixOS-level allowUnfree. TX-02 is unfree, so build it with a
+      # nixpkgs instance that permits it.
+      pkgs = import inputs.nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
     in
     {
       # TX-02 is Berkeley Mono, a proprietary typeface. The `.otf` files are
