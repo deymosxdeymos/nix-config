@@ -1,7 +1,6 @@
 {
   flake.homeModules.jujutsu =
     {
-      self,
       config,
       lib,
       pkgs,
@@ -79,6 +78,14 @@
           "--interactive"
         ];
         aliases.sh = [ "show" ];
+        aliases.tug = [
+          "bookmark"
+          "move"
+          "--from"
+          "closest_bookmark(@-)"
+          "--to"
+          "@-"
+        ];
         aliases.u = [ "undo" ];
 
         aliases.fork = [
@@ -105,6 +112,8 @@
         revsets.bookmark-advance-to = ''
           heads(::@ & ~description(exact:"") & (~empty() | merges()))
         '';
+
+        revset-aliases."closest_bookmark(to)" = "heads(::to & bookmarks())";
 
         revsets.log = ''
           present(@) | present(trunk()) | ancestors(remote_bookmarks().. | @.., 8)
@@ -149,10 +158,9 @@
         git.push = "origin";
         git.sign-on-push = true;
 
-        # SSH COMMIT SIGNING (ncc-style: sign at push, not every local commit)
         signing.backend = "ssh";
         signing.behavior = "drop";
-        signing.key = self.keys.deymosxdeymos;
+        signing.key = "${config.directory}/.ssh/id_ed25519";
       };
     };
 }
