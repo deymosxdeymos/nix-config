@@ -7,6 +7,7 @@
       environment.systemPackages = [
         pkgs.curl
         pkgs.git
+        pkgs.ghostty.terminfo
         pkgs.nano
         pkgs.vim
         pkgs.wget
