@@ -10,6 +10,10 @@
         pkgs.lazygit
       ];
 
+      xdg.config.files."git/ignore".text = ''
+        .direnv/
+      '';
+
       xdg.config.files."git/config".generator = toGitINI;
       xdg.config.files."git/config".value = {
         user.name = "deymosxdeymos";
