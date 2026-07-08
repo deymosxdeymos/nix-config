@@ -6,6 +6,7 @@ let
   themeModule =
     {
       inputs,
+      self,
       lib,
       pkgs,
       ...
@@ -38,8 +39,8 @@ let
             font.sans.name = "Lexend";
             font.sans.package = pkgs.lexend;
 
-            font.mono.name = "JetBrainsMono Nerd Font";
-            font.mono.package = pkgs.nerd-fonts.jetbrains-mono;
+            font.mono.name = "TX-02";
+            font.mono.package = self.packages.${pkgs.stdenv.hostPlatform.system}.tx-02;
 
             icons.name = "Gruvbox-Plus-Dark";
             icons.package = pkgs.gruvbox-plus-icons;
