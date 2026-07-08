@@ -32,6 +32,16 @@
       nix.settings.http-connections = 50;
       nix.settings.builders-use-substitutes = true;
 
+      # Prebuilt pi (lukasl-dev/pi.nix) binaries so pi isn't built from source.
+      nix.settings.extra-substituters = [
+        "https://pi.cachix.org"
+        "https://nix-community.cachix.org"
+      ];
+      nix.settings.extra-trusted-public-keys = [
+        "pi.cachix.org-1:lGeoGJaZ5ZDabuRzkcD5EBTNnDM4HJ1vqeOxlWk1Flk="
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      ];
+
       # nh wraps nixos-rebuild with nicer output; point it at this flake.
       programs.nh = {
         enable = true;
