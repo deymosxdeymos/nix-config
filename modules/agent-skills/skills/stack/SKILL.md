@@ -24,6 +24,9 @@ authenticate the matching CLI before running `stack`.
 - Custom trunks: `git config stack.trunks dev,develop,main,master`.
 - Jujutsu backend: `jj config set --repo stack.vcs jj` (or `STACK_VCS=jj` env override).
 - Drop the attribution link from stack blocks: `git config stack.blockLink false`.
+- GitHub repo override: `stack` pins the origin repo for `gh` automatically, but
+  if repo inference fails (for example in a sandbox that forbids a bare `git`),
+  set `GH_REPO=owner/repo` before the command.
 
 Keep ordinary editing and commits on plain `git` or `jj`. With `jj`, stack nodes
 are named local bookmarks; anonymous changes are not stack nodes until they have
@@ -81,6 +84,11 @@ work. Repeat after any parent branch changes or a squash merge lands.
   then repair descendants.
 - `stack merge --auto --through <branch-or-change>` — repeat auto-merge one root
   at a time until the target lands.
+- `stack push [branch]` — show stack branches whose local tip differs from the
+  remote and force-with-lease push them (jj bookmarks or git branches). Dry run
+  by default; add `--apply` to push. Scopes to one stack when a branch is given.
+  Never pushes trunk branches. Useful after a jj rewrite leaves `bookmark` ahead
+  of `bookmark@origin`.
 - `stack history` — show the most recent applied repair journal.
 - `stack undo` — dry-run restore of the last applied mutation.
 - `stack undo --apply` — restore branch tips, change targets, and stack metadata.
@@ -111,6 +119,13 @@ GitHub uses `#123`; GitLab uses `!123 - Title`.
 - Mutating commands need `--apply` (except `merge --auto`, which waits for the
   code host and repairs after the root lands).
 - Never mutate trunk branches (`dev`, `main`, `master`, or any configured trunk).
+- A populated jj working copy (`@` with changes) is normal editing, not a dirty
+  worktree: it never blocks `sync/merge/push/undo --apply`. Only uncommitted git
+  changes or unresolved conflicts block a mutation. `stack doctor` reports the
+  working copy as `ok working copy clean`, `info editing <change>: N file(s)`, or
+  a `warn` block hint.
+- If a code-host CLI is not authenticated, commands fail with an actionable hint
+  (for example `GitHub CLI is not authenticated. Run gh auth login.`).
 - Before rebasing, the tool creates a local backup branch.
 - Clean sibling worktrees can own branches being repaired or cleaned up; dirty
   sibling owners fail before mutation.

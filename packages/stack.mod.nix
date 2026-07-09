@@ -20,8 +20,8 @@
           src = fetchFromGitHub {
             owner = "deymosxdeymos";
             repo = "stack";
-            rev = "0d6665229e63fc6e58bf7016d0ef382f325ac948";
-            hash = "sha256-CSJBADVO2f5tZvqVeJAc+qjnlJdD+C5Sgoikpvaq38Y=";
+            rev = "43d9ec88c4d63a1c9e86d918835b968de4639004";
+            hash = "sha256-t1kDS7Mf6Uvg7sHfL1tO8lIOMuJtiX31ccOpgT7LBA0=";
           };
 
           nodeModules = stdenvNoCC.mkDerivation {
