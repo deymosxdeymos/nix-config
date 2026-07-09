@@ -18,6 +18,16 @@
                 ""
               }
 
+              let vcs_root = if ($jj_workspace_root | is-not-empty) {
+                $jj_workspace_root
+              } else {
+                try {
+                  git rev-parse --show-toplevel err> $null_device | str trim
+                } catch {
+                  ""
+                }
+              }
+
               let hostname = if ($env.SSH_CONNECTION? | is-not-empty) {
                 let hostname = try {
                   hostname
@@ -30,13 +40,13 @@
                 ""
               }
 
-              let body = if ($jj_workspace_root | is-not-empty) {
-                let subpath = pwd | path relative-to $jj_workspace_root
+              let body = if ($vcs_root | is-not-empty) {
+                let subpath = pwd | path relative-to $vcs_root
                 let subpath = if ($subpath | is-not-empty) {
                   $"(ansi magenta_bold) → (ansi reset)(ansi blue)($subpath)"
                 }
 
-                $"($hostname)(ansi light_yellow_bold)($jj_workspace_root | path basename)($subpath)(ansi reset)"
+                $"($hostname)(ansi light_yellow_bold)($vcs_root | path basename)($subpath)(ansi reset)"
               } else {
                 $"($hostname)(ansi cyan)(
                   if (pwd | str starts-with $env.HOME) {
@@ -106,7 +116,51 @@
                 ""
               }
 
-              $jj_status
+              if ($jj_status | is-not-empty) {
+                return $jj_status
+              }
+
+              # Fall back to git for repositories not backed by jj.
+              let git_head = try {
+                git rev-parse --short HEAD err> $null_device | str trim
+              } catch {
+                ""
+              }
+
+              if ($git_head | is-empty) {
+                return ""
+              }
+
+              let git_ref = try {
+                let branch = git branch --show-current err> $null_device | str trim
+                if ($branch | is-not-empty) {
+                  $branch
+                } else {
+                  git describe --tags --exact-match HEAD err> $null_device | str trim
+                }
+              } catch {
+                ""
+              }
+
+              let git_dirty = try {
+                if (git status --porcelain err> $null_device | str trim | is-not-empty) {
+                  $"(ansi red_bold)*(ansi reset)"
+                } else {
+                  ""
+                }
+              } catch {
+                ""
+              }
+
+              let git_label = if ($git_ref | is-not-empty) {
+                $"(ansi green)($git_ref)(ansi reset)"
+              } else {
+                ""
+              }
+
+              [$git_label $"(ansi yellow)($git_head)(ansi reset)($git_dirty)"]
+              | where ($it | is-not-empty)
+              | str join " "
             }
 
             $env.TRANSIENT_PROMPT_INDICATOR = "  "
