@@ -36,9 +36,13 @@
 
             export HOME="$TMPDIR"
             mkdir --parents patched
+            # `--name filename` keeps each width/weight a distinct family named
+            # after its source file; without it the patcher collapses every face
+            # to "TX02 Nerd Font Regular" and they clobber each other on output.
             printf '%s\n' ./*.otf | xargs \
               --max-procs "$NIX_BUILD_CORES" --replace={} \
-              nerd-font-patcher --complete --quiet --outputdir patched {}
+              nerd-font-patcher --complete --quiet --name filename \
+              --outputdir patched {}
 
             runHook postBuild
           '';
