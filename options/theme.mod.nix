@@ -39,7 +39,7 @@ let
             font.sans.name = "Lexend";
             font.sans.package = pkgs.lexend;
 
-            font.mono.name = "TX-02 SemiCondensed";
+            font.mono.name = "TX-02 SemiCondensed Nerd Font";
             font.mono.package = self.packages.${pkgs.stdenv.hostPlatform.system}.tx-02;
 
             icons.name = "Gruvbox-Plus-Dark";

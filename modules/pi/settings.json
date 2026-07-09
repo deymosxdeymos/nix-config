@@ -14,7 +14,8 @@
   ],
   "packages": [
     "npm:@benvargas/pi-claude-code-use",
-    "npm:@ff-labs/pi-fff"
+    "npm:@ff-labs/pi-fff",
+    "npm:pi-powerline-footer"
   ],
   "compaction": {
     "enabled": true

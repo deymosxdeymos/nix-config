@@ -19,9 +19,6 @@
       files.".pi/agent/settings.json".type = "copy";
       files.".pi/agent/settings.json".source = ./pi/settings.json;
 
-      files.".pi/agent/pi-sub-bar-settings.json".type = "copy";
-      files.".pi/agent/pi-sub-bar-settings.json".source = ./pi/pi-sub-bar-settings.json;
-
       files.".pi/agent/extensions".source = ./pi/extensions;
 
       files.".pi/agent/intercepted-commands".source = ./pi/intercepted-commands;

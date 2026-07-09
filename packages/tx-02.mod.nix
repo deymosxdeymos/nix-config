@@ -16,28 +16,44 @@
     {
       # TX-02 is Berkeley Mono, a proprietary typeface. The `.otf` files are
       # vendored under ./tx-02 because it is not distributable via a fetcher.
+      # Each face is patched with Nerd Fonts glyphs so the typeface carries the
+      # icons itself (no fallback font); the patcher appends " Nerd Font" to
+      # every family name (e.g. "TX-02 SemiCondensed Nerd Font").
       packages.tx-02 = pkgs.callPackage (
-        { stdenvNoCC }:
+        { stdenvNoCC, nerd-font-patcher }:
         stdenvNoCC.mkDerivation {
-          pname = "tx-02";
+          pname = "tx-02-nerd";
           version = "1.0";
 
           src = ./tx-02;
 
+          nativeBuildInputs = [ nerd-font-patcher ];
+
           dontConfigure = true;
-          dontBuild = true;
+
+          buildPhase = /* bash */ ''
+            runHook preBuild
+
+            export HOME="$TMPDIR"
+            mkdir --parents patched
+            printf '%s\n' ./*.otf | xargs \
+              --max-procs "$NIX_BUILD_CORES" --replace={} \
+              nerd-font-patcher --complete --quiet --outputdir patched {}
+
+            runHook postBuild
+          '';
 
           installPhase = /* bash */ ''
             runHook preInstall
 
             mkdir --parents "$out/share/fonts/opentype"
-            cp ./*.otf "$out/share/fonts/opentype/"
+            cp ./patched/*.otf "$out/share/fonts/opentype/"
 
             runHook postInstall
           '';
 
           meta = {
-            description = "TX-02 (Berkeley Mono) monospace typeface";
+            description = "TX-02 (Berkeley Mono), patched with Nerd Fonts glyphs";
             license = unfree;
           };
         }

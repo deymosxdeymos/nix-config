@@ -35,6 +35,7 @@
         pkgs.kdePackages.kate
         pkgs.kdePackages.kcalc
         pkgs.kdePackages.okular
+        pkgs.wl-clipboard
       ];
     };
 }
