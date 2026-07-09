@@ -24,6 +24,8 @@
 
       files.".pi/agent/extensions".source = ./pi/extensions;
 
+      files.".pi/agent/intercepted-commands".source = ./pi/intercepted-commands;
+
       files.".pi/agent/agents".source = ./pi/agents;
     };
 }
