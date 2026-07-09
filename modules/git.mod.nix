@@ -40,6 +40,7 @@
 
       xdg.config.files."git/ignore".text = ''
         .direnv/
+        .dev/
       '';
 
       xdg.config.files."git/config".generator = toGitINI;

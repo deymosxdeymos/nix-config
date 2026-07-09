@@ -9,6 +9,7 @@
     let
       inherit (lib.meta) getExe getExe';
       inherit (lib.modules) mkBefore;
+      git = getExe pkgs.gitMinimal;
     in
     {
       packages = [
@@ -56,6 +57,25 @@
 
           tree = "${getExe pkgs.eza} --tree --git-ignore --group-directories-first";
           pstree = "${getExe pkgs.pstree} -g 3";
+
+          # GIT
+          s = "${git} status";
+          gst = "${git} status";
+          gaa = "${git} add --all";
+          gc = "${git} commit";
+          gcm = "${git} checkout main";
+          co = "${git} checkout";
+          gd = "${git} diff";
+          gdc = "${git} diff --cached";
+          up = "${git} push";
+          upf = "${git} push --force";
+          pu = "${git} pull";
+          pur = "${git} pull --rebase";
+          fe = "${git} fetch";
+          re = "${git} rebase";
+          lr = "${git} l --max-count 30";
+          hs = "${git} rev-parse --short HEAD";
+          hm = "${git} log --format=%B --max-count 1 HEAD";
         };
 
         extraConfig = /* nu */ ''
@@ -82,6 +102,36 @@
             mkdir $path
             cd $path
             jj git init
+          }
+
+          # cd to the git repository root.
+          def --env cdr []: nothing -> nothing {
+            cd (${git} rev-parse --show-toplevel | str trim)
+          }
+
+          # [f]uzzy check[o]ut a branch.
+          def fo []: nothing -> nothing {
+            let branch = (
+              ${git} branch --no-color "--sort=-committerdate" --format='%(refname:short)'
+              | ${getExe pkgs.fzf} --header 'git checkout'
+              | str trim
+            )
+            if ($branch | is-not-empty) {
+              ${git} checkout $branch
+            }
+          }
+
+          # [p]ull request check[o]ut.
+          def po []: nothing -> nothing {
+            let branch = (
+              ${getExe pkgs.gh} pr list --author "@me"
+              | ${getExe pkgs.fzf} --header 'checkout PR'
+              | ${getExe pkgs.gawk} '{print $(NF-5)}'
+              | str trim
+            )
+            if ($branch | is-not-empty) {
+              ${git} checkout $branch
+            }
           }
         '';
       };
