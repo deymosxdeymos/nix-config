@@ -19,5 +19,12 @@
   ],
   "compaction": {
     "enabled": true
+  },
+  "showLastPrompt": false,
+  "powerline": {
+    "preset": "default",
+    "welcome": false,
+    "fixedEditor": true,
+    "mouseScroll": true
   }
 }
