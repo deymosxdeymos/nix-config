@@ -45,10 +45,14 @@ function isJjRepo(dir: string): boolean {
 // compound) shell command, skipping leading global options like `-C path`.
 function gitSubcommands(command: string): string[] {
 	const subs: string[] = [];
-	const re = /\bgit\s+((?:-\S+\s+)*)([a-z][a-z-]*)/g;
+	// An optional leading `jj ` marks the jj-native `jj git ...` form (e.g.
+	// `jj git push`, `jj git fetch`), which is exactly what we want callers to
+	// use — never flag those. Only bare `git <sub>` invocations are considered.
+	const re = /(\bjj\s+)?\bgit\s+((?:-\S+\s+)*)([a-z][a-z-]*)/g;
 	let match: RegExpExecArray | null;
 	while ((match = re.exec(command)) !== null) {
-		subs.push(match[2]);
+		if (match[1]) continue;
+		subs.push(match[3]);
 	}
 	return subs;
 }
