@@ -47,11 +47,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    pi = {
-      url = "github:lukasl-dev/pi.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     hjem-rum = {
       url = "github:snugnug/hjem-rum";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -1,18 +1,27 @@
-{ inputs, ... }:
+{ lib, ... }:
+let
+  inherit (lib.meta) getExe';
+in
 {
   # PI CODING AGENT
-  # Package comes from lukasl-dev/pi.nix (npm-built, cached on pi.cachix.org).
-  # This repo uses hjem rather than home-manager, so pi.nix's home module can't
-  # be imported directly; instead the config tree is laid out declaratively
-  # under ~/.pi/agent, mirroring the chezmoi dotfiles. pi auto-discovers the
-  # extensions/ and agents/ directories.
+  # Auto-updates from npm on each launch (like opencode/codex) rather than being
+  # pinned through a nix flake input. This repo uses hjem rather than
+  # home-manager, so the config tree is laid out declaratively under ~/.pi/agent,
+  # mirroring the chezmoi dotfiles. pi auto-discovers the extensions/ and agents/
+  # directories.
   flake.homeModules.pi =
     { pkgs, ... }:
-    let
-      inherit (pkgs.stdenv.hostPlatform) system;
-    in
     {
-      packages = [ inputs.pi.packages.${system}.coding-agent ];
+      packages = [
+        (pkgs.writeScriptBin "pi" /* bash */ ''
+          #!${getExe' pkgs.bash "bash"}
+          # npm runs a package's postinstall as `sh -c 'node ...'`, so `node`
+          # must be on PATH or the script dies with 127. Nothing else adds nodejs
+          # to PATH here.
+          export PATH="${pkgs.nodejs}/bin''${PATH:+:$PATH}"
+          exec "${getExe' pkgs.nodejs "npm"}" exec --yes --package "@earendil-works/pi-coding-agent@latest" -- "pi" "$@"
+        '')
+      ];
 
       # pi rewrites both settings files at runtime (e.g. lastChangelogVersion),
       # so they must be writable copies rather than read-only store symlinks.
