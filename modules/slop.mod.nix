@@ -109,6 +109,7 @@ in
       ...
     }:
     let
+      inherit (lib.meta) getExe;
       inherit (lib.strings)
         concatMapStringsSep
         removeSuffix
@@ -140,6 +141,14 @@ in
         developer_instructions = instructions;
 
         history.persistence = "save-all";
+
+        # Open Computer Use as a native stdio MCP server. pi has no MCP, so it
+        # instead drives the same runtime through the upstream skill (see
+        # modules/open-computer-use.mod.nix).
+        mcp_servers.open-computer-use = {
+          command = getExe self.packages.${pkgs.stdenv.hostPlatform.system}.open-computer-use;
+          args = [ "mcp" ];
+        };
 
         default_permissions = "default";
         permissions.default = {
