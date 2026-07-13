@@ -1,0 +1,11 @@
+{
+  "name": "dev-browser-runtime-deps",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "playwright-core": "1.58.2",
+    "quickjs-emscripten": "0.32.0",
+    "zod": "3.25.76"
+  }
+}
