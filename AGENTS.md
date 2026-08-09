@@ -1,6 +1,6 @@
 # Version Control
 
-Never use `git`. Instead of `git add`, use `jj file track`.
+Use Git for version control. Do not use Jujutsu (`jj`).
 
 # Development Rules
 

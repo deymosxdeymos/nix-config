@@ -31,7 +31,7 @@
       rum.programs.direnv = {
         enable = true;
         integrations.nix-direnv.enable = true;
-        integrations.nushell.enable = true;
+        integrations.fish.enable = true;
       };
 
       rum.programs.fzf.enable = true;
@@ -42,7 +42,7 @@
           "--cmd"
           "cd"
         ];
-        integrations.nushell.enable = true;
+        integrations.fish.enable = true;
       };
     };
 }

@@ -1,8 +1,7 @@
 let
   # A single source of truth for colours, fonts and spacing, consumed by both
-  # NixOS (fonts) and home modules (ghostty). Colours come from a base16 scheme
-  # via ThemeNix, so per-app config is generated (e.g. `theme.ghosttyConfig`)
-  # rather than referenced by a fragile theme name.
+  # NixOS and home modules. Colours use Catppuccin Macchiato as the static
+  # dark palette; applications with runtime theme switching use Latte by day.
   themeModule =
     {
       inputs,
@@ -25,7 +24,7 @@ let
 
       config.theme = mkDefault (
         inputs.themes.custom (
-          inputs.themes.raw.gruvbox-dark-hard
+          inputs.themes.raw.catppuccin-macchiato
           // {
             cornerRadius = 4;
             borderWidth = 2;
@@ -42,8 +41,8 @@ let
             font.mono.name = "TX-02 SemiCondensed";
             font.mono.package = self.packages.${pkgs.stdenv.hostPlatform.system}.tx-02;
 
-            icons.name = "Gruvbox-Plus-Dark";
-            icons.package = pkgs.gruvbox-plus-icons;
+            icons.name = "breeze-dark";
+            icons.package = pkgs.kdePackages.breeze-icons;
           }
         )
       );

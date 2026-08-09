@@ -1,6 +1,9 @@
 {
   flake.nixosModules.desktop =
-    { pkgs, ... }:
+    { lib, pkgs, ... }:
+    let
+      inherit (lib.modules) mkForce;
+    in
     {
       services.xserver.enable = true;
 
@@ -15,7 +18,8 @@
       services.printing.enable = true;
       services.fstrim.enable = true;
       services.fwupd.enable = true;
-      services.thermald.enable = true;
+      services.thermald.enable = mkForce false;
+      services.tlp.enable = mkForce false;
 
       services.pipewire = {
         enable = true;

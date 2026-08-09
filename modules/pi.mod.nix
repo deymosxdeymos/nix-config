@@ -1,5 +1,6 @@
-{ lib, ... }:
+{ lib, self, ... }:
 let
+  inherit (lib.strings) toJSON;
   inherit (lib.meta) getExe';
 in
 {
@@ -11,6 +12,42 @@ in
   # directories.
   flake.homeModules.pi =
     { pkgs, ... }:
+    let
+      open-computer-use = self.packages.${pkgs.stdenv.hostPlatform.system}.open-computer-use;
+      mcpConfig =
+        pkgs.writeText "pi-mcp.json"
+        <| toJSON {
+          mcp = {
+            toolMode = "proxy";
+            startup = "lazy";
+            servers = {
+              chrome-devtools = {
+                type = "local";
+                command = [
+                  (getExe' pkgs.nodejs "npm")
+                  "exec"
+                  "--yes"
+                  "--package"
+                  "chrome-devtools-mcp@latest"
+                  "--"
+                  "chrome-devtools-mcp"
+                ];
+                enabled = false;
+                timeout = 60000;
+              };
+              open-computer-use = {
+                type = "local";
+                command = [
+                  (getExe' open-computer-use "open-computer-use")
+                  "mcp"
+                ];
+                enabled = false;
+                timeout = 60000;
+              };
+            };
+          };
+        };
+    in
     {
       packages = [
         (pkgs.writeScriptBin "pi" /* bash */ ''
@@ -28,8 +65,12 @@ in
       files.".pi/agent/settings.json".type = "copy";
       files.".pi/agent/settings.json".source = ./pi/settings.json;
 
-      files.".pi/agent/extensions".source = ./pi/extensions;
+      files.".pi/agent/mcp.json".type = "copy";
+      files.".pi/agent/mcp.json".source = mcpConfig;
 
-      files.".pi/agent/agents".source = ./pi/agents;
+      files.".pi/agent/pi-sub-bar-settings.json".type = "copy";
+      files.".pi/agent/pi-sub-bar-settings.json".source = ./pi/pi-sub-bar-settings.json;
+
+      files.".pi/agent/extensions".source = ./pi/extensions;
     };
 }

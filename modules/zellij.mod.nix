@@ -7,15 +7,13 @@
     {
       packages = [ pkgs.zellij ];
 
-      # Gruvbox Dark Hard, derived from the base16 palette (base00 = hard bg)
-      # rather than zellij's built-in theme name, to stay in sync with the
-      # rest of the system theme.
+      # Catppuccin Macchiato derived from the shared base16 palette.
       xdg.config.files."zellij/config.kdl".text = # kdl
         ''
-          theme "gruvbox-dark-hard"
+          theme "catppuccin-macchiato"
 
           themes {
-              gruvbox-dark-hard {
+              catppuccin-macchiato {
                   fg "#${theme.base05}"
                   bg "#${theme.base00}"
                   black "#${theme.base00}"

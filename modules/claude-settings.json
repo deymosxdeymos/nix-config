@@ -1,0 +1,123 @@
+{
+  "cleanupPeriodDays": 365000,
+  "env": {
+    "CLAUDE_BASH_NO_LOGIN": "1",
+    "CLAUDE_CODE_EAGER_FLUSH": "1",
+    "CLAUDE_CODE_NO_FLICKER": "1",
+    "ENABLE_TOOL_SEARCH": "auto:5",
+    "USE_BUILTIN_RIPGREP": "0"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(rg*)",
+      "Bash(ls*)",
+      "Bash(gh auth status*)",
+      "Bash(gh cache list*)",
+      "Bash(gh gist list*)",
+      "Bash(gh gist view*)",
+      "Bash(gh issue list*)",
+      "Bash(gh issue status*)",
+      "Bash(gh issue view*)",
+      "Bash(gh label list*)",
+      "Bash(gh pr checks*)",
+      "Bash(gh pr diff*)",
+      "Bash(gh pr list*)",
+      "Bash(gh pr status*)",
+      "Bash(gh pr view*)",
+      "Bash(gh release list*)",
+      "Bash(gh release view*)",
+      "Bash(gh repo list*)",
+      "Bash(gh repo view*)",
+      "Bash(gh ruleset check*)",
+      "Bash(gh ruleset list*)",
+      "Bash(gh ruleset view*)",
+      "Bash(gh run list*)",
+      "Bash(gh run view*)",
+      "Bash(gh search *)",
+      "Bash(gh status*)",
+      "Bash(gh variable get*)",
+      "Bash(gh variable list*)",
+      "Bash(gh workflow list*)",
+      "Bash(gh workflow view*)",
+      "Bash(cargo clippy*)",
+      "Glob",
+      "Grep",
+      "LSP",
+      "WebFetch",
+      "WebSearch",
+      "TaskCreate",
+      "TaskUpdate",
+      "TaskGet",
+      "TaskList",
+      "TaskOutput",
+      "TaskStop",
+      "Read(/etc/profiles/**)"
+    ],
+    "deny": [
+      "Bash(cargo check*)"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "opus[1m]",
+  "skillOverrides": {
+    "ask-matt": "off",
+    "bootstrap-prelude": "off",
+    "ghidra": "off",
+    "gmcli": "off",
+    "research": "off",
+    "resolving-merge-conflicts": "off",
+    "setup-matt-pocock-skills": "off",
+    "to-tickets": "off",
+    "triage": "off",
+    "wayfinder": "off",
+    "web-perf": "off",
+    "wrangler": "off"
+  },
+  "worktree": {
+    "baseRef": "fresh"
+  },
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "figma@claude-plugins-official": false,
+    "security-guidance@claude-plugins-official": true,
+    "thermos@cursor-plugins-claude": true,
+    "bash-guard@mary-skills": true,
+    "simplify@mary-skills": true,
+    "pstack@pstack-claude": true
+  },
+  "extraKnownMarketplaces": {
+    "cursor-plugins-claude": {
+      "source": {
+        "source": "github",
+        "repo": "kdoroszewicz/cursor-plugins-claude"
+      }
+    },
+    "mary-skills": {
+      "source": {
+        "source": "git",
+        "url": "https://tangled.org/mary.my.id/claude-skills.git"
+      }
+    },
+    "pstack-claude": {
+      "source": {
+        "source": "github",
+        "repo": "michael-denyer/pstack-claude"
+      }
+    }
+  },
+  "effortLevel": "medium",
+  "advisorModel": "fable",
+  "voice": {
+    "enabled": false,
+    "mode": "hold"
+  },
+  "autoMemoryEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
+  "theme": "auto",
+  "autoCompactEnabled": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": false
+}

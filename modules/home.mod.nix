@@ -34,8 +34,8 @@
       imports = singleton (mkAliasOptionModule [ "programs" ] [ "rum" "programs" ]);
 
       environment.sessionVariables = {
-        EDITOR = "hx";
-        VISUAL = "hx";
+        EDITOR = "nvim";
+        VISUAL = "nvim";
       };
 
       packages = [

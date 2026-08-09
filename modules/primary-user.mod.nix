@@ -5,18 +5,17 @@
       users.users.cfactoryai = {
         isNormalUser = true;
         description = "cfactoryai";
-        shell = pkgs.nushell;
+        shell = pkgs.fish;
         extraGroups = [
           "networkmanager"
           "wheel"
         ];
       };
 
-      programs.zsh.enable = true;
+      programs.fish.enable = true;
 
       environment.shells = [
-        pkgs.nushell
-        pkgs.zsh
+        pkgs.fish
         pkgs.bashInteractive
       ];
     };

@@ -21,7 +21,6 @@
       vimiumCId = "hfjbmagddngcpeloejdejnfgbamkjaeg";
       consentOMaticId = "mdjildafknihdffpkfmmpnpoiajfjnjd";
       violentMonkeyId = "jinjaccalgkegednnccohejagnlnfdag";
-      kagiId = "cdglnehniifkbagbbombnjghhcihifij";
 
       forceInstalledIds = [
         bitwardenId
@@ -32,7 +31,6 @@
         vimiumCId
         consentOMaticId
         violentMonkeyId
-        kagiId
       ];
 
       # BOOKMARK HELPERS
@@ -137,9 +135,9 @@
 
         # SEARCH
         DefaultSearchProviderEnabled = true;
-        DefaultSearchProviderName = "Kagi";
-        DefaultSearchProviderSearchURL = "https://kagi.com/search?q={searchTerms}";
-        DefaultSearchProviderSuggestURL = "https://kagi.com/api/autosuggest?q={searchTerms}";
+        DefaultSearchProviderName = "Google";
+        DefaultSearchProviderSearchURL = "https://www.google.com/search?q={searchTerms}";
+        DefaultSearchProviderSuggestURL = "https://suggestqueries.google.com/complete/search?client=chrome&q={searchTerms}";
         SearchSuggestEnabled = true;
 
         # SECURE DNS (DNS-over-HTTPS)
@@ -321,17 +319,7 @@
             };
           };
 
-          SearchEngines = {
-            Default = "Kagi";
-            Add = [
-              {
-                Name = "Kagi";
-                URLTemplate = "https://kagi.com/search?q={searchTerms}";
-                SuggestURLTemplate = "https://kagi.com/api/autosuggest?q={searchTerms}";
-                Method = "GET";
-              }
-            ];
-          };
+          SearchEngines.Default = "Google";
         };
       };
 

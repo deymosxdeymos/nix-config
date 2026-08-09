@@ -21,6 +21,8 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
+    herdr.url = "github:herdrdev/herdr/v0.8.0";
+
     helium = {
       url = "github:amaanq/helium-flake";
       inputs.nixpkgs.follows = "nixpkgs";
