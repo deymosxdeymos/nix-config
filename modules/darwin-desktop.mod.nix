@@ -33,11 +33,8 @@
       };
 
       # MENU BAR
-      system.defaults.menuExtraClock.Show24Hour = true;
-      system.defaults.menuExtraClock.ShowSeconds = true;
-
       system.defaults.controlcenter.BatteryShowPercentage = true;
-      system.defaults.controlcenter.Bluetooth = true;
+      system.defaults.controlcenter.Bluetooth = false;
 
       # HIDE FROM MENU BAR: DISPLAY, KEYBOARD LOCALE, SPOTLIGHT SEARCH
       system.defaults.controlcenter.Display = false;

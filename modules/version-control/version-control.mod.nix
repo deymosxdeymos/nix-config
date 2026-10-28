@@ -6,7 +6,19 @@
     self.homeModules.git
     self.homeModules.jujutsu
     self.homeModules.mergiraf
+    self.homeModules.watchman
   ];
+
+  flake.darwinModules.default = self.darwinModules.watchman;
+  flake.darwinModules.watchman =
+    { config, ... }:
+    {
+      # The watchman daemon is spawned by launchd with a minimal environment,
+      # so WATCHMAN_CONFIG_FILE can't reach it. The compiled-in /etc path can.
+      environment.etc."watchman.json".source = "${
+        config.home.users.${config.system.primaryUser}.xdg.config.directory
+      }/watchman/watchman.json";
+    };
 
   flake.homeModules.gh =
     { lib, pkgs, ... }:
@@ -308,6 +320,39 @@
         "$left"
         "$right"
       ];
+    };
+
+  flake.homeModules.watchman =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    let
+      inherit (lib.generators) toJSON;
+      inherit (lib.lists) singleton;
+      inherit (lib.modules) mkDefault;
+    in
+    {
+      environment.sessionVariables.WATCHMAN_CONFIG_FILE = "${config.xdg.config.directory}/watchman/watchman.json";
+
+      packages = singleton pkgs.watchman;
+
+      xdg.config.files."watchman/watchman.json".generator = toJSON { };
+      xdg.config.files."watchman/watchman.json".value = {
+        ignore_dirs = [
+          ".direnv"
+          "node_modules"
+          "target"
+        ];
+      };
+
+      xdg.config.files."jj/config.toml".generator = mkDefault <| pkgs.writers.writeTOML "jj-config.toml";
+      xdg.config.files."jj/config.toml".value = {
+        fsmonitor.backend = "watchman";
+        fsmonitor.watchman.register-snapshot-trigger = true;
+      };
     };
 
   flake.homeModules.mergiraf =

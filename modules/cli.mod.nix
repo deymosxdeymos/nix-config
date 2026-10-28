@@ -12,7 +12,6 @@
         pkgs.jq
         pkgs.nodejs
         pkgs.python312
-        pkgs.ripgrep
         pkgs.uv
         pkgs.xcodegen
       ];

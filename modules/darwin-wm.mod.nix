@@ -682,42 +682,6 @@
           end)
         end
 
-        do -- SPACE BUTTONS
-          local space_buttons = {}
-
-          local updateSpaceButtons = function()
-            local current_space = hs.spaces.activeSpaceOnScreen()
-            local spaces = hs.spaces.allSpaces()[hs.screen.mainScreen():getUUID()]
-
-            if #space_buttons ~= #spaces then
-              for _, button in pairs(space_buttons) do
-                button:delete()
-              end
-              space_buttons = {}
-
-              for index = #spaces, 1, -1 do
-                space_buttons[index] = hs.menubar.new()
-
-                space_buttons[index]:setClickCallback(function()
-                  gotoSpace(index)
-                end)
-              end
-            end
-
-            for index, space in ipairs(spaces) do
-              local attributes = space == current_space and {
-                color = { red = 1 }
-              } or {}
-
-              space_buttons[index]:setTitle(hs.styledtext.new(tostring(index), attributes))
-            end
-          end
-
-          hs.spaces.watcher.new(updateSpaceButtons):start()
-
-          updateSpaceButtons()
-        end
-
         do -- NO ANIMATIONS
           hs.window.animationDuration = 0
         end
