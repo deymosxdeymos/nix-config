@@ -20,15 +20,14 @@
       # TODO: Switch to "zap" once everything not listed here has been uninstalled.
       homebrew.onActivation.cleanup = "none";
 
+      # TODO: Add 1password, claude, helium-browser and raycast once they can be
+      # adopted (`brew install --cask --adopt`), which needs App Management
+      # permission for the terminal.
       homebrew.casks = [
-        "1password"
         "caffeine"
-        "claude"
         "claude-code@latest"
         "codex"
         "dotnet-sdk"
-        "helium-browser"
-        "raycast"
         "tailscale-app"
       ];
 
