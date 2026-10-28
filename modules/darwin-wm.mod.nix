@@ -12,8 +12,8 @@
       # NSGLOBALDOMAIN
       system.defaults.NSGlobalDomain = {
         NSWindowShouldDragOnGesture = true; # CMD+CTRL click to drag window. PaperWM intercepts this for tiled windows.
-        AppleEnableMouseSwipeNavigateWithScrolls = false;
-        AppleEnableSwipeNavigateWithScrolls = false;
+        AppleEnableMouseSwipeNavigateWithScrolls = true; # Two-finger swipe for back/forward.
+        AppleEnableSwipeNavigateWithScrolls = true;
 
         NSWindowResizeTime = 0.003;
 
