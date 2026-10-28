@@ -338,15 +338,15 @@
           -- APPLICATIONS
           hs.hotkey.bind(super, "w", function() hs.application.launchOrFocus("Helium") end)
           hs.hotkey.bind(super, "return", function()
-            local ghostty = hs.application.get("Ghostty")
+            local rex = hs.application.get("Rex Beta")
 
-            if not ghostty then
-              hs.application.launchOrFocus("Ghostty")
+            if not rex then
+              hs.application.launchOrFocus("Rex Beta")
               return
             end
 
-            ghostty:activate()
-            hs.eventtap.keyStroke({ "cmd" }, "n", 0, ghostty)
+            rex:activate()
+            hs.eventtap.keyStroke({ "cmd" }, "n", 0, rex)
           end)
           hs.hotkey.bind(super, "t", function() hs.application.launchOrFocus("Finder") end)
 
