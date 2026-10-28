@@ -7,7 +7,6 @@
       inherit (lib.lists) singleton;
     in
     {
-      # Sets up the nix-darwin environment in /etc/fish.
       programs.fish.enable = true;
 
       environment.shells = singleton pkgs.fish;
@@ -48,7 +47,6 @@
       xdg.config.files."fish/conf.d/env.fish".text = /* fish */ ''
         fish_add_path --global --prepend "$HOME/.local/bin" "$CARGO_HOME/bin" "$GOPATH/bin" "$BUN_INSTALL/bin"
 
-        # Keep API keys and other secrets out of version control.
         set -l local_env "${config.xdg.config.directory}/fish/local-env.fish"
         if test -f $local_env
             source $local_env
@@ -58,13 +56,11 @@
       xdg.config.files."fish/conf.d/aliases.fish".text = /* fish */ ''
         alias vim 'nvim'
 
-        # ls family
         alias la 'ls --all'
         alias ll 'ls -l'
         alias lla 'ls -la'
         alias sl 'ls'
 
-        # file ops
         alias cp 'cp --recursive --verbose'
         alias mk 'mkdir'
         alias mv 'mv --verbose'

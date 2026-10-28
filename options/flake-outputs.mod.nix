@@ -11,8 +11,6 @@ let
   inherit (lib.fixedPoints) fix;
   inherit (lib.types) deferredModule lazyAttrsOf;
 
-  # Modules get a `key` so that importing the same module through both
-  # `default` and its own name doesn't define everything twice.
   wrap =
     {
       kind,

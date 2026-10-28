@@ -4,8 +4,6 @@
   flake.darwinModules.use-xdg-dirs =
     { config, ... }:
     {
-      # The watchman daemon is spawned by launchd with a minimal environment,
-      # so WATCHMAN_CONFIG_FILE can't reach it. the compiled-in /etc path can.
       environment.etc."watchman.json".source = "${
         config.home.users.${config.system.primaryUser}.xdg.config.directory
       }/watchman/watchman.json";
@@ -22,7 +20,7 @@
       environment.sessionVariables.CLAUDE_CONFIG_DIR = "${config.xdg.config.directory}/claude-code";
 
       files.".ssh/config".text =
-        # sshclientconfig
+        /* sshclientconfig */
         ''
           Include ${config.xdg.config.directory}/ssh/config
         '';

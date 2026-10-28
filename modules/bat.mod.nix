@@ -12,7 +12,7 @@
     in
     {
       environment.sessionVariables = fix (variables: {
-        MANROFFOPT = "-c"; # Prevent groff from emitting ANSI color, bat does the highlighting.
+        MANROFFOPT = "-c";
         MANPAGER =
           getExe
           <| pkgs.writers.writeNuBin "man-pager" /* nu */ ''
@@ -51,7 +51,6 @@
         pkgs.less
       ];
 
-      # `#env` assignments shadow the real environment, so nothing else setting LESS can mess with our settings.
       xdg.config.files."lesskey".generator = toLesskey;
       xdg.config.files."lesskey".value.env.LESS = [
         "--quit-if-one-screen"
@@ -78,7 +77,6 @@
           explicitBool = false;
         })
         |> concatLines;
-      # Built-in theme that follows the terminal's palette.
       xdg.config.files."bat/config".value.theme = "base16";
     };
 }

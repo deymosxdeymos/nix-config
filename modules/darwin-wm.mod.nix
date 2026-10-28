@@ -9,21 +9,16 @@
       ...
     }:
     {
-      # NSGLOBALDOMAIN
       system.defaults.NSGlobalDomain = {
-        NSWindowShouldDragOnGesture = true; # CMD+CTRL click to drag window. PaperWM intercepts this for tiled windows.
+        NSWindowShouldDragOnGesture = true;
         AppleEnableMouseSwipeNavigateWithScrolls = false;
         AppleEnableSwipeNavigateWithScrolls = false;
 
-        NSWindowResizeTime = 0.003;
-
-        AppleSpacesSwitchOnActivate = false; # Do not switch workspaces implicitly.
+        AppleSpacesSwitchOnActivate = false;
       };
 
-      # DOCK
       system.defaults.CustomUserPreferences."com.apple.dock".workspaces-auto-swoosh = false;
 
-      # HOTKEYS
       system.defaults.CustomUserPreferences."com.apple.symbolichotkeys".AppleSymbolicHotKeys =
         let
           inherit (lib.attrsets) getAttr mapAttrs;
@@ -111,7 +106,6 @@
           };
         in
         {
-          # Save / Copy full screen.
           "28" = hotkey "s" [
             "super"
           ];
@@ -120,7 +114,6 @@
             "option"
           ];
 
-          # Save / Copy / Record Menu selected area.
           "30" = hotkey "a" [
             "super"
           ];
@@ -133,7 +126,6 @@
             "shift"
           ];
 
-          # Previous / Next input source.
           "60" = hotkey "tab" [
             "super"
             "option"
@@ -144,14 +136,10 @@
             "option"
           ];
 
-          # Spotlight search launcher.
           "64" = hotkey "backspace" [
             "super"
           ];
 
-          # Keyboard focus/navigation shortcuts: menu bar, Dock,
-          # active/next window, window toolbar, floating window,
-          # Full Keyboard Access toggle, Tab focus behavior, and app-window cycle.
           "7".enabled = 0;
           "8".enabled = 0;
           "9".enabled = 0;
@@ -161,93 +149,69 @@
           "13".enabled = 0;
           "27".enabled = 0;
 
-          # Accessibility Zoom/display toggles: zoom, zoom in/out,
-          # reverse black and white, and zoom image smoothing.
           "15".enabled = 0;
           "17".enabled = 0;
           "19".enabled = 0;
           "21".enabled = 0;
           "23".enabled = 0;
 
-          # Increase / Decrease contrast.
           "25".enabled = 0;
           "26".enabled = 0;
 
-          # Mission Control all-windows overview.
           "32" = hotkey "o" [
             "super"
           ];
 
-          # Disable Application Windows and slow Mission Control variants.
           "33".enabled = 0;
           "34".enabled = 0;
           "35".enabled = 0;
 
-          # Show desktop / slowly.
           "36".enabled = 0;
           "37".enabled = 0;
 
-          # Toggle Dock hiding.
           "52".enabled = 0;
 
-          # F14/F15 display brightness shortcuts, separate from hardware brightness keys.
           "53".enabled = 0;
           "54".enabled = 0;
 
-          # Move focus to status menus.
           "57".enabled = 0;
 
-          # VoiceOver.
           "59".enabled = 0;
 
-          # Finder search window, which currently opens Spotlight on Tahoe.
           "65".enabled = 0;
 
-          # Previous / Next space.
           "79".enabled = 0;
           "81".enabled = 0;
 
-          # Previous / Next space, slow.
           "80".enabled = 0;
           "82".enabled = 0;
 
-          # Help menu.
           "98".enabled = 0;
 
-          # Trackpad handwriting.
           "156".enabled = 0;
 
-          # Contextual menu.
           "159".enabled = 0;
 
-          # Accessibility controls.
           "162".enabled = 0;
 
-          # Hidden Control-alone hotkey from Apple's default template.
           "164".enabled = 0;
 
-          # Save / Copy Touch Bar.
           "181".enabled = 0;
           "182".enabled = 0;
 
-          # Quick Note.
           "190".enabled = 0;
 
-          # Minimize window.
           "233".enabled = 0;
 
-          # Fill / Center / Restore window.
           "237".enabled = 0;
           "238".enabled = 0;
           "239".enabled = 0;
 
-          # Tile window to left / right / top / bottom half.
           "240".enabled = 0;
           "241".enabled = 0;
           "242".enabled = 0;
           "243".enabled = 0;
 
-          # Arrange windows left/right, right/left, top/bottom, or bottom/top.
           "248".enabled = 0;
           "249".enabled = 0;
           "250".enabled = 0;
@@ -371,18 +335,15 @@
           }
         ''}";
 
-      # TRACKPAD
       system.defaults.CustomUserPreferences."com.apple.AppleMultitouchTrackpad" = {
-        TrackpadThreeFingerVertSwipeGesture = 0; # Four finger swipe up for mission control.
+        TrackpadThreeFingerVertSwipeGesture = 0;
 
-        # Disable 3 finger horizontal stuff, PaperWM uses it to scroll.
         TrackpadFourFingerHorizSwipeGesture = 0;
         TrackpadThreeFingerHorizSwipeGesture = 0;
       };
 
-      # WINDOW MANAGER
       system.defaults.WindowManager = {
-        AppWindowGroupingBehavior = false; # Show them one at a time.
+        AppWindowGroupingBehavior = false;
       };
     };
 
@@ -399,7 +360,6 @@
       inherit (lib.modules) mkAfter;
     in
     {
-      # SPOONS
       xdg.config.files."hammerspoon/Spoons/PaperWM.spoon".source = pkgs.fetchFromGitHub {
         owner = "mogenson";
         repo = "PaperWM.spoon";
@@ -414,9 +374,7 @@
         hash = "sha256-G0kuCrG6lz4R+LdAqNWiMXneF09pLI+xKCiagryBb5k=";
       };
 
-      # INIT
       xdg.config.files."hammerspoon/init.lua".text = mkAfter /* lua */ ''
-        ---@type table
         _G.hs = _G.hs
 
         PaperWM = hs.loadSpoon("PaperWM")
@@ -461,7 +419,6 @@
           changeSpaceBy(change_by)
         end
 
-        -- Bind both the arrow and the vim key for a direction.
         local bindDirection = function(modifiers, direction, fn)
           local vim_key = ({ left = "h", down = "j", up = "k", right = "l" })[direction]
 
@@ -469,14 +426,13 @@
           hs.hotkey.bind(modifiers, vim_key, fn)
         end
 
-        do -- HOTKEYS
+        do
           local super = { "cmd", "ctrl" }
           local super_alt = { "cmd", "ctrl", "alt" }
           local super_shift = { "cmd", "ctrl", "shift" }
 
           local actions = PaperWM.actions.actions()
 
-          -- SPACES
           hs.hotkey.bind(super, "tab", function() changeSpaceBy(1) end)
           hs.hotkey.bind(super_shift, "tab", function() changeSpaceBy(-1) end)
 
@@ -485,7 +441,6 @@
             hs.hotkey.bind(super_shift, tostring(index), actions["move_window_" .. index])
           end
 
-          -- FOCUS
           PaperWM.drag_window = super
           bindDirection(super, "left", function()
             actions.focus_left()
@@ -498,7 +453,6 @@
             actions.center_window()
           end)
 
-          -- RESIZE
           do
             local windowResize = function(offsetWidth, offsetHeight)
               local window = hs.window.focusedWindow()
@@ -564,7 +518,6 @@
 
           hs.hotkey.bind(super_alt, "f", actions.full_width)
 
-          -- SWAP / MOVE
           do
             PaperWM.lift_window = super_shift
 
@@ -587,11 +540,9 @@
             bindDirection(super_shift, "right", swapOrMove(actions.swap_right, 100,   0))
           end
 
-          -- SLURP & BARF
           hs.hotkey.bind(super_shift, "t", actions.slurp_in)
           hs.hotkey.bind(super_shift, "g", actions.barf_out)
 
-          -- MISC
           hs.hotkey.bind(super, "q", function()
             local window = hs.window.focusedWindow()
             if not window then return end
@@ -600,7 +551,6 @@
           hs.hotkey.bind(super, "c", actions.center_window)
           hs.hotkey.bind(super, "f", actions.toggle_floating)
 
-          -- APPLICATIONS
           hs.hotkey.bind(super, "w", function() hs.application.launchOrFocus("Helium") end)
           hs.hotkey.bind(super, "return", function()
             local rex = hs.application.get("Rex Beta")
@@ -616,10 +566,8 @@
           hs.hotkey.bind(super, "t", function() hs.application.launchOrFocus("Finder") end)
 
           PaperWM.swipe_fingers = 3
-          -- 1:1 with the fingers. ncc's 1.7 overshoots.
           PaperWM.swipe_gain = 1
 
-          -- FALL BACK TO SYSTEM WINDOW GRAB ON FLOATING
           do
             local mouseHandler = PaperWM.events.mouseHandler
 
@@ -644,7 +592,6 @@
             end
           end
 
-          -- FLOATING WINDOWS ON TOP
           PaperWM.window_filter:subscribe({
             hs.window.filter.windowFocused,
             hs.window.filter.windowVisible,
@@ -660,7 +607,7 @@
           PaperWM:start()
         end
 
-        do -- 3 FINGER VERTICAL SWIPE TO CHANGE SPACES
+        do
           local current_id, threshold
 
           Swipe:start(3, function(direction, distance, id)
@@ -680,10 +627,6 @@
               end
             end
           end)
-        end
-
-        do -- NO ANIMATIONS
-          hs.window.animationDuration = 0
         end
       '';
     };

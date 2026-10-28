@@ -40,8 +40,7 @@ Never use `git`. Instead of `git add`, use `jj file track`.
   `{ home, ... }:` instead of `value: value.home` where it makes sense.
 
 - Always put `/* lang */` before multiline code strings, e.g. `/* bash */ ''`.
-- Category/section comments should be uppercase with no period, e.g. `# DOCK`,
-  not `# Dock.`.
+- Do not write comments, in Nix or in embedded code. Only `/* lang */` markers.
 - Prefer setting individual options with `mkIf` over wrapping entire attrsets.
   Use `foo.bar = mkIf condition value;` not
   `foo = mkIf condition { bar = value; };` when possible.

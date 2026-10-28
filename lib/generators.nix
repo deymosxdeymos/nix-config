@@ -16,7 +16,6 @@ let
     ;
 in
 {
-  # OpenSSH client config.
   generators.toSSHConfig =
     attrs:
     let
@@ -40,13 +39,6 @@ in
     in
     attrs
     |> attrNames
-    # Plain options go first, as a section keyword claims the rest of the file.
-    #
-    # Host foo
-    #     Bar baz
-    # Biz fuz
-    #
-    # "Biz" is actually still a part of "Host foo". It's a footgun.
     |> sortOn (name: if !isAttrs attrs.${name} then -67 else 0)
     |> map (
       name:
@@ -58,7 +50,6 @@ in
       else
         value
         |> attrNames
-        # Specific first, general last. "x.foo.com" must precede "*.foo.com".
         |> sortOn (pattern: -(stringLength <| replaceStrings [ "*" "?" ] [ "" "" ] pattern))
         |> map (pattern: singleton "${name} ${pattern}" ++ toLines { indent = "\t"; } value.${pattern})
         |> flatten
@@ -66,7 +57,6 @@ in
     |> flatten
     |> concatLines;
 
-  # lesskey(1) config format used by less.
   generators.toLesskey =
     sections:
     sections

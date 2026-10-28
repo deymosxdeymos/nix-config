@@ -23,10 +23,8 @@ let
     warn
     ;
 
-  # PASSWORDS
   extensions."1password".id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";
 
-  # UNSLOP
   extensions.ublock-origin =
     let
       assets = importJSON "${inputs.ublock}/assets/assets.json";
@@ -73,16 +71,12 @@ let
         |> foldr (name: warn "helium: unknown ublock filter list: ${name}") filterLists;
 
       policy.toOverwrite.filters =
-        # YOUTUBE
         [
-          # SHORTS -> WATCH
           ''||youtube.com/shorts/$document,uritransform=/^https:\/\/(?:www\.|m\.)?youtube\.com\/shorts\/([^\/?#]+)/https:\/\/www.youtube.com\/watch?v=\$1/''
 
-          # TODO: Allow youtube embeds without click2load'ing, as they are broken: https://github.com/uBlockOrigin/uBlock-issues/issues/3868
           "@@||youtube.com/embed/$frame"
           "@@||youtube-nocookie.com/embed/$frame"
         ]
-        # OLD REDDIT
         ++ [
           "@@||reddit.com/media$document,uritransform"
           "@@||reddit.com/video/$document,uritransform"
@@ -107,19 +101,14 @@ let
         ];
     };
 
-  # YOUTUBE
   extensions.dearrow.id = "enamippconapkdmgfgjchkhakpfinmaj";
   extensions.sponsorblock.id = "mnjggcdmjocbbbhaepdhchncahnbgone";
 
-  # VISUALS
   extensions.avec.id = "kggjnhfbblkeaobciljmjicfmmbgdhmk";
   extensions.control-panel-for-twitter.id = "kpmjjdhbcfebfjgdnpjagcndoelnidfj";
   extensions.refined-github.id = "hlepfoohegkhhmjieoechaddaejaokhf";
 
-  # Unlike ncc, there is no ExtensionInstallBlocklist, so manually loaded
-  # extensions (such as the unpacked browser-control one) keep working.
   policy = {
-    # EXTENSIONS
     ExtensionInstallForcelist =
       extensions
       |> filterAttrs (_: extension: !(extension.preinstalled or false))
@@ -163,9 +152,6 @@ in
     {
       homebrew.casks = singleton "helium-browser";
 
-      # POLICY
-      # ncc writes these with nix-darwin's modular services, which aren't merged
-      # upstream yet, so they are installed from an activation script instead.
       system.activationScripts.postActivation.text = /* bash */ ''
         echo "installing helium policies..."
 
@@ -180,8 +166,6 @@ in
           |> concatLines
         }
 
-        # cfprefsd caches managed preferences, so restart it to pick up the new ones.
-        # ncc uses `launchctl kickstart`, which SIP refuses here. launchd respawns it.
         /usr/bin/killall cfprefsd || true
       '';
     };

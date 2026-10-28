@@ -20,8 +20,6 @@
     {
       packages = singleton pkgs.gh;
 
-      # gh writes its own config.yml and hosts.yml (which holds the token),
-      # so neither is managed here.
 
       xdg.config.files."git/config".generator = mkDefault toGitINI;
       xdg.config.files."git/config".value.credential = {
@@ -286,7 +284,6 @@
         ];
         git.push = "origin";
 
-        # Drop signatures while editing, and sign on push.
         signing.behavior = "drop";
         git.sign-on-push = true;
 
@@ -360,7 +357,6 @@
         ];
         aliases.resa = singleton "resolve-ast";
 
-        # Override the program with the absolute binary path.
         merge-tools.mergiraf.program = getExe pkgs.mergiraf;
       };
     };

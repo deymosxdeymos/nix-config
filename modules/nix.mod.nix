@@ -10,8 +10,6 @@
       inherit (lib.types) isType;
     in
     {
-      # Determinate Nix manages the daemon and /etc/nix/nix.conf itself,
-      # so nix-darwin's `nix.*` is disabled and settings go to nix.custom.conf.
       imports = singleton inputs.determinate.darwinModules.default;
 
       environment.systemPackages = [

@@ -2,7 +2,6 @@
 {
   flake.darwinModules.default = self.darwinModules.editor;
   flake.darwinModules.editor = {
-    # nix-darwin defaults this to nano in every shell's environment.
     environment.variables.EDITOR = "hx";
   };
 
@@ -16,8 +15,6 @@
         pkgs.helix
         pkgs.neovim
 
-        # LANGUAGE SERVERS
-        # init.lua only enables the ones it finds on PATH.
         pkgs.lua-language-server
         pkgs.nil
         pkgs.nixfmt
@@ -28,7 +25,6 @@
         pkgs.vscode-langservers-extracted
       ];
 
-      # nvim-pack-lock.json is written by vim.pack, so it stays unmanaged.
       xdg.config.files."nvim/init.lua".source = ./init.lua;
     };
 }

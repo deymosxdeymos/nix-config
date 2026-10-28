@@ -22,12 +22,10 @@
         listsAsDuplicateKeys = true;
       };
       xdg.config.files."ghostty/config".value = {
-        # 100 MiB
         scrollback-limit = 100 * 1024 * 1024;
 
         mouse-hide-while-typing = true;
 
-        # Updated through Homebrew.
         auto-update = "off";
       };
     };

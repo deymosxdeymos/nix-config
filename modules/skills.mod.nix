@@ -7,9 +7,6 @@
       inherit (lib.attrsets) genAttrs' nameValuePair;
     in
     {
-      # Agent skills live in the private ~/Developer/skills repo. They are linked
-      # out of the store so edits apply without a rebuild. Only these names are
-      # managed; the rest of ~/.agents/skills belongs to skill installers.
       files =
         genAttrs'
           [

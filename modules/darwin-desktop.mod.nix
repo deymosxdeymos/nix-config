@@ -4,7 +4,6 @@
   flake.darwinModules.darwin-desktop =
     { config, pkgs, ... }:
     {
-      # DOCK
       system.defaults.dock = {
         autohide = true;
         showhidden = true;
@@ -16,27 +15,15 @@
       };
 
       system.defaults.CustomUserPreferences."com.apple.dock" = {
-        autohide-time-modifier = 0.0;
-        autohide-delay = 0.0;
-        expose-animation-duration = 0.0;
-        springboard-show-duration = 0.0;
-        springboard-hide-duration = 0.0;
-        springboard-page-duration = 0.0;
-
-        # Disable hot corners.
         wvous-tl-corner = 0;
         wvous-tr-corner = 0;
         wvous-bl-corner = 0;
         wvous-br-corner = 0;
-
-        launchanim = 0;
       };
 
-      # MENU BAR
       system.defaults.controlcenter.BatteryShowPercentage = true;
       system.defaults.controlcenter.Bluetooth = false;
 
-      # HIDE FROM MENU BAR: DISPLAY, KEYBOARD LOCALE, SPOTLIGHT SEARCH
       system.defaults.controlcenter.Display = false;
       system.defaults.CustomUserPreferences."com.apple.TextInputMenu".visible = false;
       system.activationScripts.postActivation.text = "${pkgs.writers.writeNu "hide-spotlight.nu" /* nu */ ''
@@ -59,10 +46,8 @@
         }
       ''}";
 
-      # SCREENSHOTS
       system.defaults.screencapture.location = "~/Downloads";
 
-      # FINDER
       system.defaults.finder = {
         AppleShowAllExtensions = true;
         FXEnableExtensionChangeWarning = false;
@@ -70,9 +55,9 @@
       };
 
       system.defaults.NSGlobalDomain = {
-        NSNavPanelExpandedStateForSaveMode = true; # Expand save panel by default.
+        NSNavPanelExpandedStateForSaveMode = true;
         NSNavPanelExpandedStateForSaveMode2 = true;
-        PMPrintingExpandedStateForPrint = true; # Expand print panel by default.
+        PMPrintingExpandedStateForPrint = true;
         PMPrintingExpandedStateForPrint2 = true;
       };
     };

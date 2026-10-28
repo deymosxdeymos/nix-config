@@ -4,9 +4,6 @@
   flake.homeModules.home =
     { config, ... }:
     {
-      # FORCE XDG ENV VARS
-      # hjem only exports XDG_*_HOME when config value != option default.
-      # Setting them directly bypasses hjem's conditional logic.
       environment.sessionVariables = {
         XDG_CACHE_HOME = "${config.directory}/.cache";
         XDG_CONFIG_HOME = "${config.directory}/.config";
@@ -39,8 +36,6 @@
 
       home.clobberByDefault = true;
 
-      # SESSION VARIABLES
-      # Exported through launchd so GUI apps and every shell they spawn see them.
       launchd.user.envVariables =
         config.home.users.${config.system.primaryUser}.environment.sessionVariables;
 

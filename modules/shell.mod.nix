@@ -16,7 +16,6 @@
     {
       packages = singleton pkgs.atuin;
 
-      # Binds CTRL+R and UP.
       xdg.config.files."fish/conf.d/atuin.fish".text = /* fish */ ''
         if status is-interactive
             ${getExe pkgs.atuin} init fish | source
@@ -51,7 +50,6 @@
     {
       packages = singleton pkgs.zoxide;
 
-      # `cd` and `cdi` are overridden by zoxide's smart jumping.
       xdg.config.files."fish/conf.d/zoxide.fish".text = /* fish */ ''
         ${getExe pkgs.zoxide} init fish --cmd cd | source
       '';
@@ -74,7 +72,6 @@
 
       xdg.config.files."starship.toml".generator = pkgs.writers.writeTOML "starship.toml";
       xdg.config.files."starship.toml".value = {
-        # Node shims can take longer than Starship's default 500ms to resolve.
         command_timeout = 2000;
 
         format = "$directory\${custom.scm}$all";
@@ -102,8 +99,6 @@
 
         nix_shell.symbol = " ";
 
-        # Only show Node for actual Node projects. This avoids unnecessary
-        # `node --version` calls in repos that just happen to contain JS/TS files.
         nodejs.detect_extensions = [ ];
         nodejs.detect_files = [
           "package.json"

@@ -12,12 +12,10 @@
 
       homebrew.enable = true;
 
-      # Taps are pinned through flake inputs, so brew must not try to manage them.
       homebrew.taps = attrNames config.nix-homebrew.taps;
 
       homebrew.onActivation.autoUpdate = false;
       homebrew.onActivation.upgrade = false;
-      # TODO: Switch to "zap" once everything not listed here has been uninstalled.
       homebrew.onActivation.cleanup = "none";
 
       homebrew.casks = [
@@ -38,7 +36,6 @@
 
         user = config.system.primaryUser;
 
-        # Take over the existing /opt/homebrew installation.
         autoMigrate = true;
 
         taps."homebrew/homebrew-core" = inputs.homebrew-core;
@@ -47,7 +44,6 @@
 
         mutableTaps = false;
 
-        # Homebrew refuses formulae from untrusted third-party taps.
         trust.formulae = singleton "anomalyco/tap/opencode-v2";
       };
     };

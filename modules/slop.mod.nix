@@ -3,7 +3,6 @@ let
   inherit (lib.lists) concatMap;
   inherit (lib.strings) concatLines;
 
-  # Only writes are forbidden, so read-only git (and the skills using it) keep working.
   forbidden.rules = [
     {
       commands = [
@@ -125,9 +124,6 @@ in
       inherit (lib.lists) singleton;
       inherit (lib.meta) getExe;
 
-      # Claude Code's worktrees become jj workspaces. A WorktreeCreate hook
-      # replaces git entirely, so plain git repos fall back to `git worktree`.
-      # The hook prints the path it created as its last line of stdout.
       worktreeCreate = pkgs.writeShellApplication {
         name = "claude-worktree-create";
         runtimeInputs = [
@@ -141,7 +137,6 @@ in
           cd "$(jq --raw-output .cwd <<< "$input")"
 
           if root=$(jj workspace root 2>/dev/null); then
-            # A sibling directory, so the main workspace doesn't snapshot it.
             destination="$(dirname "$root")/$(basename "$root")-$name"
             jj workspace add --name "$name" "$destination" >&2
           else
@@ -177,7 +172,7 @@ in
     {
       xdg.config.files."claude-code/CLAUDE.md".text = instructions;
 
-      xdg.config.files."claude-code/settings.json".type = "copy"; # Slop tries to write to the config directory :/.
+      xdg.config.files."claude-code/settings.json".type = "copy";
       xdg.config.files."claude-code/settings.json".generator = toJSON { };
       xdg.config.files."claude-code/settings.json".value = {
         "$schema" = "https://json.schemastore.org/claude-code-settings.json";
@@ -187,20 +182,17 @@ in
         model = "opus";
         modelSettings.claude-opus-5-5.autoCompactWindow = "auto";
 
-        # YOLO, but deny rules still apply in bypass mode.
         permissions.defaultMode = "bypassPermissions";
         skipDangerousModePermissionPrompt = true;
         permissions.deny =
           forbidden.rules |> concatMap (rule: rule.commands |> map (command: "Bash(${command})"));
 
-        # LESS SLOPS
         syncClaudeAiPlugins = false;
         syncClaudeAiSkills = false;
         env.CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY = "1";
         env.DISABLE_ERROR_REPORTING = "1";
         env.DISABLE_TELEMETRY = "1";
 
-        # TOOLS
         hooks.SessionStart = singleton {
           hooks = singleton {
             type = "command";
@@ -221,7 +213,6 @@ in
           };
         };
 
-        # VISUAL UNSLOPS
         attribution.commit = "";
         attribution.pr = "";
 

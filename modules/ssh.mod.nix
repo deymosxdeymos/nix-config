@@ -1,5 +1,11 @@
 { self, ... }:
 {
+  flake.darwinModules.default = self.darwinModules.ssh-known-hosts;
+  flake.darwinModules.ssh-known-hosts = {
+    programs.ssh.knownHosts."github.com".publicKey =
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+  };
+
   flake.homeModules.default = self.homeModules.ssh-client;
   flake.homeModules.ssh-client =
     {
