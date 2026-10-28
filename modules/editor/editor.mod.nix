@@ -1,5 +1,11 @@
 { self, ... }:
 {
+  flake.darwinModules.default = self.darwinModules.editor;
+  flake.darwinModules.editor = {
+    # nix-darwin defaults this to nano in every shell's environment.
+    environment.variables.EDITOR = "hx";
+  };
+
   flake.homeModules.default = self.homeModules.editor;
   flake.homeModules.editor =
     { pkgs, ... }:

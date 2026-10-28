@@ -13,16 +13,7 @@
 
   flake.homeModules.default = self.homeModules.fish;
   flake.homeModules.fish =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
-    let
-      inherit (lib.attrsets) mapAttrsToList;
-      inherit (lib.strings) concatLines escapeShellArg;
-    in
+    { config, pkgs, ... }:
     {
       packages = [
         pkgs.eza
@@ -53,22 +44,7 @@
       '';
 
       xdg.config.files."fish/conf.d/env.fish".text = /* fish */ ''
-        # Also exported through launchd, but processes started before the last
-        # login (or over SSH) would otherwise keep stale values.
-        ${
-          config.environment.sessionVariables
-          |> mapAttrsToList (name: value: "set --global --export ${name} ${escapeShellArg value}")
-          |> concatLines
-        }
-        # Nix paths come from /etc/fish. Homebrew is only a fallback, and has to
-        # be moved since it is usually inherited at the front of PATH.
-        fish_add_path --global --append --move /opt/homebrew/bin /opt/homebrew/sbin
         fish_add_path --global --prepend "$HOME/.local/bin" "$CARGO_HOME/bin" "$GOPATH/bin" "$BUN_INSTALL/bin"
-
-        # The rex CLI ships inside the app, which tells its terminals where.
-        if set --query REX_BIN_DIR
-            fish_add_path --global --append $REX_BIN_DIR
-        end
 
         # Keep API keys and other secrets out of version control.
         set -l local_env "${config.xdg.config.directory}/fish/local-env.fish"
