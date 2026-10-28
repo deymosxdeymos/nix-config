@@ -55,6 +55,10 @@
     flake = false;
   };
 
+  inputs.helix = {
+    url = "github:helix-editor/helix";
+  };
+
   inputs.ublock = {
     url = "github:imputnet/uBlock";
     flake = false;
