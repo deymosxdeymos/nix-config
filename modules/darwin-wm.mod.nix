@@ -351,7 +351,8 @@
           hs.hotkey.bind(super, "t", function() hs.application.launchOrFocus("Finder") end)
 
           PaperWM.swipe_fingers = 3
-          PaperWM.swipe_gain = 1.7
+          -- 1:1 with the fingers. ncc's 1.7 overshoots.
+          PaperWM.swipe_gain = 1
 
           -- FALL BACK TO SYSTEM WINDOW GRAB ON FLOATING
           do
