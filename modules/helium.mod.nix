@@ -179,6 +179,14 @@ in
           )
           |> concatLines
         }
+
+        # cfprefsd caches managed preferences, so restart it to pick up the new ones.
+        uid=$(/usr/bin/id -u $(/usr/bin/stat -f %Su /dev/console))
+
+        # If console is owned by root, there can't be a user logged in, so can't start this.
+        [ "$uid" != 0 ] && /bin/launchctl kickstart -k gui/$uid/com.apple.cfprefsd.xpc.agent
+
+        /bin/launchctl kickstart -k system/com.apple.cfprefsd.xpc.daemon
       '';
     };
 }
