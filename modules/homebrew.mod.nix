@@ -46,6 +46,9 @@
         taps."anomalyco/homebrew-tap" = inputs.homebrew-anomalyco;
 
         mutableTaps = false;
+
+        # Homebrew refuses formulae from untrusted third-party taps.
+        trust.formulae = singleton "anomalyco/tap/opencode-v2";
       };
     };
 }
