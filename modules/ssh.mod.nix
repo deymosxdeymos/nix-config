@@ -17,11 +17,11 @@
     let
       inherit (lib.attrsets) filterAttrs mapAttrs;
       inherit (lib.generators) toSSHConfig;
-      inherit (lib.meta) getExe;
+      inherit (lib.meta) getExe';
     in
     {
       xdg.config.files."fish/conf.d/ssh.fish".text = /* fish */ ''
-        alias mosh '${getExe pkgs.mosh} --no-init'
+        alias mosh '${getExe' pkgs.mosh "mosh"} --no-init'
       '';
 
       packages = [

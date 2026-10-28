@@ -446,7 +446,7 @@
 
         remotes."*" = {
           auto-track-bookmarks = "${toLower self.people.self.name}/*";
-          auto-track-created-bookmarks = true;
+          auto-track-created-bookmarks = "*";
         };
 
         git.fetch = [
