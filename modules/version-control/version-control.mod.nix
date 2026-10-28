@@ -1,0 +1,336 @@
+{ self, ... }:
+{
+  flake.homeModules.default.imports = [
+    self.homeModules.difftastic
+    self.homeModules.gh
+    self.homeModules.git
+    self.homeModules.jujutsu
+    self.homeModules.mergiraf
+  ];
+
+  flake.homeModules.gh =
+    { lib, pkgs, ... }:
+    let
+      inherit (lib.generators) toGitINI;
+      inherit (lib.lists) singleton;
+      inherit (lib.meta) getExe;
+      inherit (lib.modules) mkDefault;
+    in
+    {
+      packages = singleton pkgs.gh;
+
+      # gh writes its own config.yml and hosts.yml (which holds the token),
+      # so neither is managed here.
+
+      xdg.config.files."git/config".generator = mkDefault toGitINI;
+      xdg.config.files."git/config".value.credential = {
+        "https://github.com".helper = [
+          ""
+          "!${getExe pkgs.gh} auth git-credential"
+        ];
+        "https://gist.github.com".helper = [
+          ""
+          "!${getExe pkgs.gh} auth git-credential"
+        ];
+      };
+    };
+
+  flake.homeModules.git =
+    { lib, pkgs, ... }:
+    let
+      inherit (lib.generators) toGitINI;
+      inherit (lib.lists) singleton;
+      inherit (lib.meta) getExe;
+    in
+    {
+      packages = singleton pkgs.git;
+
+      xdg.config.files."fish/conf.d/git.fish".text = /* fish */ ''
+        alias g 'git'
+        alias gst 'git status'
+        alias gsb 'git status --short --branch'
+        alias gc 'git commit --verbose'
+        alias s 'git status'
+        alias gaa 'git add -A'
+        alias gap 'git add --patch'
+        alias co 'git switch'
+        alias gco 'git switch'
+        alias gcb 'git switch --create'
+        alias gcm 'git switch (__git.default_branch)'
+        alias gd 'git diff'
+        alias gdc 'git diff --cached'
+        alias up 'git push'
+        alias upf 'git push --force-with-lease'
+        alias gpu 'git push --set-upstream origin (__git.current_branch)'
+        alias pu 'git pull'
+        alias pur 'git pull --rebase'
+        alias fe 'git fetch'
+        alias gfa 'git fetch --all --prune'
+        alias re 'git rebase'
+        alias grbi 'git rebase --interactive'
+        alias glog 'git log --oneline --decorate --graph'
+        alias gloga 'git log --oneline --decorate --graph --all'
+        alias lr 'git l -30'
+        alias hs 'git rev-parse --short HEAD'
+        alias hm 'git log --format=%B -n 1 HEAD'
+      '';
+
+      xdg.config.files."git/ignore".text = ''
+        **/.claude/settings.local.json
+        .direnv/
+      '';
+
+      xdg.config.files."ssh/allowed_signers".text = ''
+        ${self.people.self.email} ${self.people.self.ssh.key}
+      '';
+
+      xdg.config.files."git/config".generator = toGitINI;
+      xdg.config.files."git/config".value = {
+        user = {
+          inherit (self.people.self) name email;
+          signingKey = "~/.ssh/id_ed25519.pub";
+        };
+
+        alias.fomo = "!${getExe pkgs.fish} -c 'git fetch origin (__git.default_branch); and git rebase origin/(__git.default_branch) --autostash'";
+        alias.lg = "log --oneline --decorate --graph";
+
+        branch.sort = "-committerdate";
+
+        column.ui = "auto";
+
+        commit.gpgSign = true;
+        tag.gpgSign = true;
+
+        gpg.format = "ssh";
+        "gpg \"ssh\"".allowedSignersFile = "~/.config/ssh/allowed_signers";
+
+        core.editor = "hx";
+        core.fsmonitor = true;
+
+        fetch.prune = true;
+        fetch.writeCommitGraph = true;
+
+        init.defaultBranch = "main";
+
+        pull.rebase = true;
+
+        rebase.autoStash = true;
+        rebase.updateRefs = true;
+
+        rerere.enabled = true;
+      };
+    };
+
+  flake.homeModules.jujutsu =
+    { lib, pkgs, ... }:
+    let
+      inherit (lib.lists) singleton;
+    in
+    {
+      packages = singleton pkgs.jujutsu;
+
+      xdg.config.files."fish/conf.d/jujutsu.fish".text = /* fish */ ''
+        alias j 'jj'
+        alias jjj 'jj'
+      '';
+
+      xdg.config.files."jj/config.toml".generator = pkgs.writers.writeTOML "jj-config.toml";
+      xdg.config.files."jj/config.toml".value = {
+        user = {
+          inherit (self.people.self) name email;
+        };
+
+        aliases.".." = [
+          "edit"
+          "@-"
+        ];
+        aliases.",," = [
+          "edit"
+          "@+"
+        ];
+
+        aliases.fetch = [
+          "git"
+          "fetch"
+        ];
+        aliases.f = [
+          "git"
+          "fetch"
+        ];
+
+        aliases.push = [
+          "git"
+          "push"
+        ];
+        aliases.p = [
+          "git"
+          "push"
+        ];
+
+        aliases.clone = [
+          "git"
+          "clone"
+        ];
+        aliases.cl = [
+          "git"
+          "clone"
+        ];
+
+        aliases.init = [
+          "git"
+          "init"
+        ];
+        aliases.i = [
+          "git"
+          "init"
+        ];
+
+        aliases.a = singleton "abandon";
+
+        aliases.c = singleton "commit";
+        aliases.ci = [
+          "commit"
+          "--interactive"
+        ];
+
+        aliases.d = singleton "diff";
+
+        aliases.e = singleton "edit";
+
+        aliases.l = singleton "log";
+        aliases.la = [
+          "log"
+          "--revisions"
+          "::"
+        ];
+        aliases.ls = [
+          "log"
+          "--summary"
+        ];
+        aliases.lsa = [
+          "log"
+          "--summary"
+          "--revisions"
+          "::"
+        ];
+        aliases.lp = [
+          "log"
+          "--patch"
+        ];
+        aliases.lpa = [
+          "log"
+          "--patch"
+          "--revisions"
+          "::"
+        ];
+
+        aliases.r = singleton "rebase";
+
+        aliases.res = singleton "resolve";
+
+        aliases.s = singleton "squash";
+        aliases.si = [
+          "squash"
+          "--interactive"
+        ];
+
+        aliases.sh = singleton "show";
+
+        aliases.tug = [
+          "bookmark"
+          "move"
+          "--from"
+          "closest(@-)"
+          "--to"
+          "closest_pushable(@)"
+        ];
+        aliases.t = singleton "tug";
+
+        aliases.u = singleton "undo";
+
+        revset-aliases."closest(to)" = "heads(::to & bookmarks())";
+        revset-aliases."closest_pushable(to)" =
+          ''heads(::to & ~description(exact:"") & (~empty() | merges()))'';
+
+        revsets.log = /* python */ ''
+          present(@) | present(trunk()) | ancestors(remote_bookmarks().. | @.., 8)
+        '';
+
+        ui.default-command = "ls";
+
+        ui.diff-editor = ":builtin";
+
+        ui.conflict-marker-style = "snapshot";
+        ui.graph.style = "curved";
+
+        templates.draft_commit_description = /* python */ ''
+          concat(
+            coalesce(description, "\n"),
+            surround(
+              "\nJJ: This commit contains the following changes:\n", "",
+              indent("JJ:     ", diff.stat(72)),
+            ),
+            "\nJJ: ignore-rest\n",
+            diff.git(),
+          )
+        '';
+
+        git.fetch = [
+          "origin"
+          "upstream"
+        ];
+        git.push = "origin";
+
+        # Drop signatures while editing, and sign on push.
+        signing.behavior = "drop";
+        git.sign-on-push = true;
+
+        signing.backend = "ssh";
+        signing.key = "~/.ssh/id_ed25519.pub";
+      };
+    };
+
+  flake.homeModules.difftastic =
+    { lib, pkgs, ... }:
+    let
+      inherit (lib.lists) singleton;
+      inherit (lib.meta) getExe;
+      inherit (lib.modules) mkDefault;
+    in
+    {
+      packages = singleton pkgs.difftastic;
+
+      xdg.config.files."jj/config.toml".generator = mkDefault <| pkgs.writers.writeTOML "jj-config.toml";
+      xdg.config.files."jj/config.toml".value.ui.diff-formatter = [
+        (getExe pkgs.difftastic)
+        "--color"
+        "always"
+        "$left"
+        "$right"
+      ];
+    };
+
+  flake.homeModules.mergiraf =
+    { lib, pkgs, ... }:
+    let
+      inherit (lib.lists) singleton;
+      inherit (lib.meta) getExe;
+      inherit (lib.modules) mkDefault;
+    in
+    {
+      packages = singleton pkgs.mergiraf;
+
+      xdg.config.files."jj/config.toml".generator = mkDefault <| pkgs.writers.writeTOML "jj-config.toml";
+      xdg.config.files."jj/config.toml".value = {
+        aliases.resolve-ast = [
+          "resolve"
+          "--tool"
+          "mergiraf"
+        ];
+        aliases.resa = singleton "resolve-ast";
+
+        # Override the program with the absolute binary path.
+        merge-tools.mergiraf.program = getExe pkgs.mergiraf;
+      };
+    };
+}
