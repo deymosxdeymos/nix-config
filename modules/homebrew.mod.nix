@@ -27,7 +27,6 @@
         "claude-code@latest"
         "codex"
         "dotnet-sdk"
-        "helium-browser"
         "raycast"
         "tailscale-app"
       ];

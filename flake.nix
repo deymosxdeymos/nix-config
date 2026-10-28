@@ -55,6 +55,11 @@
     flake = false;
   };
 
+  inputs.ublock = {
+    url = "github:imputnet/uBlock";
+    flake = false;
+  };
+
   outputs =
     inputs:
     let

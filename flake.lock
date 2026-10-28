@@ -384,7 +384,24 @@
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "nix-darwin": "nix-darwin",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_3",
+        "ublock": "ublock"
+      }
+    },
+    "ublock": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789664289,
+        "narHash": "sha256-4YvLZ2fWIF9mqQd8gl+E9WageWFYWmvo+kqrqmm6Rko=",
+        "owner": "imputnet",
+        "repo": "uBlock",
+        "rev": "63318934af4db0f427daf2765dda930790c9199d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "imputnet",
+        "repo": "uBlock",
+        "type": "github"
       }
     }
   },
