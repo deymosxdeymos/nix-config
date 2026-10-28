@@ -2,49 +2,31 @@
 {
   flake.darwinModules.default = self.darwinModules.nix;
   flake.darwinModules.nix =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
+    { lib, pkgs, ... }:
     let
       inherit (lib.attrsets) filterAttrs mapAttrs;
-      inherit (lib.lists) elem singleton;
-      inherit (lib.options) mkOption;
-      inherit (lib.strings) getName;
+      inherit (lib.lists) singleton;
       inherit (lib.trivial) const;
-      inherit (lib.types) isType listOf str;
+      inherit (lib.types) isType;
     in
     {
       # Determinate Nix manages the daemon and /etc/nix/nix.conf itself,
       # so nix-darwin's `nix.*` is disabled and settings go to nix.custom.conf.
       imports = singleton inputs.determinate.darwinModules.default;
 
-      options.nixpkgs.allowedUnfreePackages = mkOption {
-        type = listOf str;
-        default = [ ];
-        description = "List of unfree package names to allow.";
-      };
+      environment.systemPackages = [
+        pkgs.dix
+        pkgs.nh
+        pkgs.nix-output-monitor
+      ];
 
-      config = {
-        nixpkgs.config.allowUnfreePredicate =
-          package: elem (getName package) config.nixpkgs.allowedUnfreePackages;
+      determinateNix.customSettings = (import <| self + /flake.nix).nixConfig;
 
-        environment.systemPackages = [
-          pkgs.dix
-          pkgs.nh
-          pkgs.nix-output-monitor
-        ];
+      determinateNix.determinateNixd.garbageCollector.strategy = "automatic";
 
-        determinateNix.customSettings = (import <| self + /flake.nix).nixConfig;
-
-        determinateNix.determinateNixd.garbageCollector.strategy = "automatic";
-
-        determinateNix.registry =
-          filterAttrs (const <| isType "flake") inputs // { default = inputs.nixpkgs; }
-          |> mapAttrs (_: flake: { inherit flake; });
-      };
+      determinateNix.registry =
+        filterAttrs (const <| isType "flake") inputs // { default = inputs.nixpkgs; }
+        |> mapAttrs (_: flake: { inherit flake; });
     };
 
   flake.homeModules.default = self.homeModules.nix;

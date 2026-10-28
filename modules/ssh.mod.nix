@@ -11,22 +11,19 @@
     let
       inherit (lib.attrsets) filterAttrs mapAttrs;
       inherit (lib.generators) toSSHConfig;
-      inherit (lib.lists) singleton;
+      inherit (lib.meta) getExe;
     in
     {
+      xdg.config.files."fish/conf.d/ssh.fish".text = /* fish */ ''
+        alias mosh '${getExe pkgs.mosh} --no-init'
+      '';
+
       packages = [
         pkgs.mosh
+        pkgs.openssh
       ];
 
-      xdg.config.files."fish/conf.d/ssh.fish".text = /* fish */ ''
-        alias mosh 'mosh --no-init'
-      '';
-
       xdg.cache.files."ssh".type = "directory";
-
-      files.".ssh/config".text = /* sshclientconfig */ ''
-        Include ${config.xdg.config.directory}/ssh/config
-      '';
 
       xdg.config.files."ssh/config".generator = toSSHConfig;
       xdg.config.files."ssh/config".value.Host =
@@ -45,6 +42,8 @@
         )
         // {
           "*" = {
+            SetEnv = "COLORTERM=truecolor TERM=xterm-256color";
+
             IdentityFile = "~/.ssh/id_ed25519";
 
             ControlMaster = "auto";

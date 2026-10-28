@@ -2,21 +2,15 @@
 {
   flake.homeModules.default = self.homeModules.ripgrep;
   flake.homeModules.ripgrep =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
+    { lib, pkgs, ... }:
     let
       inherit (lib.cli) toCommandLine;
-      inherit (lib.lists) singleton;
       inherit (lib.strings) concatLines;
     in
     {
-      environment.sessionVariables.RIPGREP_CONFIG_PATH = "${config.xdg.config.directory}/ripgrep/config";
-
-      packages = singleton pkgs.ripgrep;
+      packages = [
+        pkgs.ripgrep
+      ];
 
       xdg.config.files."ripgrep/config".generator =
         attrs:

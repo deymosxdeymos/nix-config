@@ -9,17 +9,6 @@
     self.homeModules.watchman
   ];
 
-  flake.darwinModules.default = self.darwinModules.watchman;
-  flake.darwinModules.watchman =
-    { config, ... }:
-    {
-      # The watchman daemon is spawned by launchd with a minimal environment,
-      # so WATCHMAN_CONFIG_FILE can't reach it. The compiled-in /etc path can.
-      environment.etc."watchman.json".source = "${
-        config.home.users.${config.system.primaryUser}.xdg.config.directory
-      }/watchman/watchman.json";
-    };
-
   flake.homeModules.gh =
     { lib, pkgs, ... }:
     let
@@ -87,12 +76,12 @@
         alias hm 'git log --format=%B -n 1 HEAD'
       '';
 
-      xdg.config.files."git/ignore".text = ''
+      xdg.config.files."git/ignore".text = /* gitignore */ ''
         **/.claude/settings.local.json
         .direnv/
       '';
 
-      xdg.config.files."ssh/allowed_signers".text = ''
+      xdg.config.files."ssh/allowed_signers".text = /* sshallowedsigners */ ''
         ${self.people.self.email} ${self.people.self.ssh.key}
       '';
 
@@ -130,6 +119,10 @@
         rebase.updateRefs = true;
 
         rerere.enabled = true;
+
+        fetch.fsckObjects = true;
+        receive.fsckObjects = true;
+        transfer.fsckobjects = true;
       };
     };
 
@@ -323,20 +316,13 @@
     };
 
   flake.homeModules.watchman =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
+    { lib, pkgs, ... }:
     let
       inherit (lib.generators) toJSON;
       inherit (lib.lists) singleton;
       inherit (lib.modules) mkDefault;
     in
     {
-      environment.sessionVariables.WATCHMAN_CONFIG_FILE = "${config.xdg.config.directory}/watchman/watchman.json";
-
       packages = singleton pkgs.watchman;
 
       xdg.config.files."watchman/watchman.json".generator = toJSON { };

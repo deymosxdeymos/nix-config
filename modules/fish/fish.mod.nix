@@ -2,13 +2,15 @@
 {
   flake.darwinModules.default = self.darwinModules.fish;
   flake.darwinModules.fish =
-    { pkgs, ... }:
+    { lib, pkgs, ... }:
+    let
+      inherit (lib.lists) singleton;
+    in
     {
-      # Sets up the nix-darwin environment in /etc/fish, which only fish from
-      # nixpkgs reads. Homebrew's fish looks in /opt/homebrew/etc instead.
+      # Sets up the nix-darwin environment in /etc/fish.
       programs.fish.enable = true;
 
-      environment.shells = [ pkgs.fish ];
+      environment.shells = singleton pkgs.fish;
     };
 
   flake.homeModules.default = self.homeModules.fish;

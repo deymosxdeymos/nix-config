@@ -7,7 +7,6 @@
       inherit (lib.cli) toCommandLine;
       inherit (lib.fixedPoints) fix;
       inherit (lib.generators) toLesskey;
-      inherit (lib.lists) singleton;
       inherit (lib.meta) getExe;
       inherit (lib.strings) concatLines;
     in
