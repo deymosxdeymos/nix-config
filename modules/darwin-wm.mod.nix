@@ -23,7 +23,7 @@
         let
           inherit (lib.attrsets) getAttr mapAttrs;
           inherit (lib.fixedPoints) fix;
-          inherit (lib.lists) foldl';
+          inherit (lib.lists) foldl' singleton;
           inherit (lib.strings) charToInt;
 
           keyCodes =
@@ -55,6 +55,16 @@
                 x = 7;
                 y = 16;
                 z = 6;
+
+                "1" = 18;
+                "2" = 19;
+                "3" = 20;
+                "4" = 21;
+                "5" = 23;
+                "6" = 22;
+                "7" = 26;
+                "8" = 28;
+                "9" = 25;
               }
               |> mapAttrs (
                 char: code: {
@@ -180,8 +190,23 @@
 
           "65".enabled = 0;
 
-          "79".enabled = 0;
-          "81".enabled = 0;
+          "79" = hotkey "tab" [
+            "super"
+            "shift"
+          ];
+          "81" = hotkey "tab" [
+            "super"
+          ];
+
+          "118" = hotkey "1" <| singleton "super";
+          "119" = hotkey "2" <| singleton "super";
+          "120" = hotkey "3" <| singleton "super";
+          "121" = hotkey "4" <| singleton "super";
+          "122" = hotkey "5" <| singleton "super";
+          "123" = hotkey "6" <| singleton "super";
+          "124" = hotkey "7" <| singleton "super";
+          "125" = hotkey "8" <| singleton "super";
+          "126" = hotkey "9" <| singleton "super";
 
           "80".enabled = 0;
           "82".enabled = 0;
@@ -349,14 +374,8 @@
 
   flake.homeModules.default = self.homeModules.darwin-wm;
   flake.homeModules.darwin-wm =
-    {
-      lib,
-      osConfig,
-      pkgs,
-      ...
-    }:
+    { lib, pkgs, ... }:
     let
-      inherit (lib.meta) getExe;
       inherit (lib.modules) mkAfter;
     in
     {
@@ -382,43 +401,8 @@
         PaperWM = hs.loadSpoon("PaperWM")
         Swipe = hs.loadSpoon("Swipe")
 
-        local space_task = nil
-
         local changeSpaceBy = function(offset)
-          if offset == 0 then return end
-
-          if space_task and space_task:isRunning() then
-            space_task:terminate()
-          end
-
-          space_task = hs.task.new("${
-            getExe self.packages.${osConfig.nixpkgs.hostPlatform.system}.fast-workspace-switch
-          }", nil, {
-            offset > 0 and "right" or "left",
-            tostring(math.abs(offset)),
-          })
-
-          space_task:start()
-        end
-
-        local gotoSpace = function(index)
-          local current_index = (function()
-            local current_space = hs.spaces.activeSpaceOnScreen()
-            local spaces = hs.spaces.allSpaces()[hs.screen.mainScreen():getUUID()]
-
-            local current_index = nil
-            for space_index, space in ipairs(spaces) do
-              if space == current_space then
-                current_index = space_index
-                break
-              end
-            end
-
-            return current_index
-          end)()
-          local change_by = index - current_index
-
-          changeSpaceBy(change_by)
+          hs.eventtap.keyStroke(offset > 0 and { "cmd", "ctrl" } or { "cmd", "ctrl", "shift" }, "tab", 0)
         end
 
         local bindDirection = function(modifiers, direction, fn)
@@ -435,11 +419,7 @@
 
           local actions = PaperWM.actions.actions()
 
-          hs.hotkey.bind(super, "tab", function() changeSpaceBy(1) end)
-          hs.hotkey.bind(super_shift, "tab", function() changeSpaceBy(-1) end)
-
           for index = 1, 9 do
-            hs.hotkey.bind(super, tostring(index), function() gotoSpace(index) end)
             hs.hotkey.bind(super_shift, tostring(index), actions["move_window_" .. index])
           end
 
