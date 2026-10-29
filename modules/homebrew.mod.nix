@@ -27,6 +27,7 @@
         "dotnet-sdk"
         "raycast"
         "tailscale-app"
+        "thebrowsercompany-dia"
       ];
 
       homebrew.brews = singleton "anomalyco/tap/opencode-v2";
