@@ -405,6 +405,39 @@
           hs.eventtap.keyStroke(offset > 0 and { "cmd", "ctrl" } or { "cmd", "ctrl", "shift" }, "tab", 0)
         end
 
+        local moveWindowToSpace = function(index)
+          local window = hs.window.focusedWindow()
+          if not window then return end
+
+          local frame = window:frame()
+          local point = { x = frame.x + frame.w / 2, y = frame.y + 10 }
+
+          local zoom = hs.axuielement.windowElement(window):attributeValue("AXZoomButton")
+          if zoom then
+            local button = zoom:attributeValue("AXFrame")
+            point = { x = button.x + button.w + 12, y = button.y + button.h / 2 }
+          end
+
+          local tiled = PaperWM.state.windowIndex(window) ~= nil
+          if tiled then PaperWM.floating.toggleFloating(window) end
+
+          local mouse = hs.mouse.absolutePosition()
+          hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseDown, point):post()
+
+          hs.timer.doAfter(0.15, function()
+            hs.eventtap.keyStroke({ "cmd", "ctrl" }, tostring(index), 0)
+
+            hs.timer.doAfter(0.5, function()
+              hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseUp, point):post()
+              hs.mouse.absolutePosition(mouse)
+
+              if tiled then
+                hs.timer.doAfter(0.3, function() PaperWM.floating.toggleFloating(window) end)
+              end
+            end)
+          end)
+        end
+
         local bindDirection = function(modifiers, direction, fn)
           local vim_key = ({ left = "h", down = "j", up = "k", right = "l" })[direction]
 
@@ -420,7 +453,7 @@
           local actions = PaperWM.actions.actions()
 
           for index = 1, 9 do
-            hs.hotkey.bind(super_shift, tostring(index), actions["move_window_" .. index])
+            hs.hotkey.bind(super_shift, tostring(index), function() moveWindowToSpace(index) end)
           end
 
           PaperWM.drag_window = super
