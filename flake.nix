@@ -50,6 +50,10 @@
     url = "github:homebrew/homebrew-cask";
     flake = false;
   };
+  inputs.homebrew-mantrakp04 = {
+    url = "github:mantrakp04/homebrew-tap";
+    flake = false;
+  };
   inputs.homebrew-anomalyco = {
     url = "github:anomalyco/homebrew-tap";
     flake = false;
