@@ -377,6 +377,8 @@
       xdg.config.files."hammerspoon/init.lua".text = mkAfter /* lua */ ''
         _G.hs = _G.hs
 
+        require("hs.ipc")
+
         PaperWM = hs.loadSpoon("PaperWM")
         Swipe = hs.loadSpoon("Swipe")
 
