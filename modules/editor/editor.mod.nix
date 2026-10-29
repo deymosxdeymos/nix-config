@@ -86,7 +86,7 @@
       xdg.config.files."helix/config.toml".generator = pkgs.writers.writeTOML "helix-config.toml";
       xdg.config.files."helix/config.toml".value = {
         theme = {
-          dark = "catppuccin_macchiato";
+          dark = "rasmus";
           light = "catppuccin_latte";
         };
 
