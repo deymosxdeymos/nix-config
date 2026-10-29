@@ -42,7 +42,10 @@
       inherit (lib.meta) getExe;
     in
     {
-      packages = singleton pkgs.git;
+      packages = [
+        pkgs.git
+        pkgs.git-lfs
+      ];
 
       xdg.config.files."fish/conf.d/git.fish".text = /* fish */ ''
         alias g 'git'
@@ -117,6 +120,13 @@
         rebase.updateRefs = true;
 
         rerere.enabled = true;
+
+        filter.lfs = {
+          clean = "${getExe pkgs.git-lfs} clean -- %f";
+          smudge = "${getExe pkgs.git-lfs} smudge -- %f";
+          process = "${getExe pkgs.git-lfs} filter-process";
+          required = true;
+        };
 
         fetch.fsckObjects = true;
         receive.fsckObjects = true;

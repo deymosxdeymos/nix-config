@@ -6,6 +6,7 @@
     {
       packages = [
         pkgs._7zz
+        pkgs.bun
         pkgs.fd
         pkgs.fzf
         pkgs.glslang
