@@ -275,22 +275,6 @@
         "type": "github"
       }
     },
-    "homebrew-mantrakp04": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1793238417,
-        "narHash": "sha256-muF/V1ZC1F29Kb1INB/t8W9EFFFIx/vnYO+UVE5SH6U=",
-        "owner": "mantrakp04",
-        "repo": "homebrew-tap",
-        "rev": "d34ec5833a10ad27016f947450726630acd9d7f2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mantrakp04",
-        "repo": "homebrew-tap",
-        "type": "github"
-      }
-    },
     "nix": {
       "inputs": {
         "bdwgc": "bdwgc",
@@ -435,7 +419,6 @@
         "homebrew-anomalyco": "homebrew-anomalyco",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
-        "homebrew-mantrakp04": "homebrew-mantrakp04",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_4",
         "ublock": "ublock"
