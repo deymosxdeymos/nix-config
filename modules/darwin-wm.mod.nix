@@ -126,10 +126,10 @@
 
           "30" = hotkey "a" [
             "super"
+            "option"
           ];
           "31" = hotkey "a" [
             "super"
-            "option"
           ];
           "184" = hotkey "a" [
             "super"
