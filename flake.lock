@@ -227,6 +227,22 @@
         "type": "github"
       }
     },
+    "homebrew-ampcode": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793334097,
+        "narHash": "sha256-AGZBZOS0XWqNvmTrFK+0d42ex4cpm6FPYPWnTEL/9a8=",
+        "owner": "ampcode",
+        "repo": "homebrew-tap",
+        "rev": "99d588898cf4843e1414134f5ad9292cb9558a85",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ampcode",
+        "repo": "homebrew-tap",
+        "type": "github"
+      }
+    },
     "homebrew-anomalyco": {
       "flake": false,
       "locked": {
@@ -432,6 +448,7 @@
         "helix": "helix",
         "hjem": "hjem",
         "homebrew": "homebrew",
+        "homebrew-ampcode": "homebrew-ampcode",
         "homebrew-anomalyco": "homebrew-anomalyco",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",

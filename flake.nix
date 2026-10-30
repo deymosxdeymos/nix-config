@@ -55,6 +55,11 @@
     flake = false;
   };
 
+  inputs.homebrew-ampcode = {
+    url = "github:ampcode/homebrew-tap";
+    flake = false;
+  };
+
   inputs.homebrew-rift = {
     url = "github:acsandmann/homebrew-tap";
     flake = false;
