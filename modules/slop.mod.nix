@@ -218,6 +218,8 @@ in
 
         theme = "auto";
         tui = "fullscreen";
+
+        awaySummaryEnabled = false;
       };
     };
 }
