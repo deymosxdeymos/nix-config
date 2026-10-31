@@ -34,6 +34,14 @@
           --set-home
           --user $user
           --
+          /bin/mkdir
+          -p
+          ${config.system.defaults.screencapture.location})
+
+        (^/bin/launchctl asuser $uid /usr/bin/sudo
+          --set-home
+          --user $user
+          --
           /usr/bin/defaults
           -currentHost write com.apple.Spotlight MenuItemHidden -int 1)
 
@@ -46,7 +54,7 @@
         }
       ''}";
 
-      system.defaults.screencapture.location = "~/Downloads";
+      system.defaults.screencapture.location = "${config.users.users.${config.system.primaryUser}.home}/Pictures/Screenshots";
 
       system.defaults.finder = {
         AppleShowAllExtensions = true;

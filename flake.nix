@@ -60,11 +60,6 @@
     flake = false;
   };
 
-  inputs.homebrew-rift = {
-    url = "github:acsandmann/homebrew-tap";
-    flake = false;
-  };
-
   inputs.helix = {
     url = "github:helix-editor/helix";
   };

@@ -74,6 +74,22 @@
               )
             )
             // {
+              left = {
+                char = 65535;
+                code = 123;
+              };
+              right = {
+                char = 65535;
+                code = 124;
+              };
+              down = {
+                char = 65535;
+                code = 125;
+              };
+              up = {
+                char = 65535;
+                code = 126;
+              };
               space = {
                 char = 32;
                 code = 49;
@@ -116,23 +132,27 @@
           };
         in
         {
-          "28" = hotkey "s" [
-            "super"
+          "28" = hotkey "3" [
+            "command"
+            "shift"
           ];
-          "29" = hotkey "s" [
-            "super"
-            "option"
+          "29" = hotkey "3" [
+            "command"
+            "control"
+            "shift"
           ];
 
-          "30" = hotkey "a" [
-            "super"
-            "option"
+          "30" = hotkey "4" [
+            "command"
+            "shift"
           ];
-          "31" = hotkey "a" [
-            "super"
+          "31" = hotkey "4" [
+            "command"
+            "control"
+            "shift"
           ];
-          "184" = hotkey "a" [
-            "super"
+          "184" = hotkey "5" [
+            "command"
             "shift"
           ];
 
@@ -168,11 +188,9 @@
           "25".enabled = 0;
           "26".enabled = 0;
 
-          "32" = hotkey "o" [
-            "super"
-          ];
+          "32" = hotkey "up" <| singleton "control";
 
-          "33".enabled = 0;
+          "33" = hotkey "down" <| singleton "control";
           "34".enabled = 0;
           "35".enabled = 0;
 
@@ -190,23 +208,18 @@
 
           "65".enabled = 0;
 
-          "79" = hotkey "tab" [
-            "super"
-            "shift"
-          ];
-          "81" = hotkey "tab" [
-            "super"
-          ];
+          "79" = hotkey "left" <| singleton "control";
+          "81" = hotkey "right" <| singleton "control";
 
-          "118" = hotkey "1" <| singleton "super";
-          "119" = hotkey "2" <| singleton "super";
-          "120" = hotkey "3" <| singleton "super";
-          "121" = hotkey "4" <| singleton "super";
-          "122" = hotkey "5" <| singleton "super";
-          "123" = hotkey "6" <| singleton "super";
-          "124" = hotkey "7" <| singleton "super";
-          "125" = hotkey "8" <| singleton "super";
-          "126" = hotkey "9" <| singleton "super";
+          "118" = hotkey "1" <| singleton "control";
+          "119" = hotkey "2" <| singleton "control";
+          "120" = hotkey "3" <| singleton "control";
+          "121" = hotkey "4" <| singleton "control";
+          "122" = hotkey "5" <| singleton "control";
+          "123" = hotkey "6" <| singleton "control";
+          "124" = hotkey "7" <| singleton "control";
+          "125" = hotkey "8" <| singleton "control";
+          "126" = hotkey "9" <| singleton "control";
 
           "80".enabled = 0;
           "82".enabled = 0;
@@ -360,15 +373,28 @@
           }
         ''}";
 
-      system.defaults.CustomUserPreferences."com.apple.AppleMultitouchTrackpad" = {
-        TrackpadThreeFingerVertSwipeGesture = 0;
+      system.defaults.spaces.spans-displays = false;
 
-        TrackpadFourFingerHorizSwipeGesture = 0;
+      system.defaults.dock = {
+        showMissionControlGestureEnabled = true;
+        showAppExposeGestureEnabled = true;
+      };
+
+      system.defaults.trackpad = {
+        TrackpadThreeFingerDrag = true;
         TrackpadThreeFingerHorizSwipeGesture = 0;
+        TrackpadThreeFingerVertSwipeGesture = 0;
+        TrackpadFourFingerHorizSwipeGesture = 2;
+        TrackpadFourFingerVertSwipeGesture = 2;
       };
 
       system.defaults.WindowManager = {
+        GloballyEnabled = false;
         AppWindowGroupingBehavior = false;
+
+        EnableTilingByEdgeDrag = true;
+        EnableTopTilingByEdgeDrag = true;
+        EnableTilingOptionAccelerator = true;
       };
     };
 }

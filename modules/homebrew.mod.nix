@@ -21,6 +21,7 @@
       homebrew.casks = [
         "1password"
         "altserver"
+        "chatgpt"
         "claude"
         "claude-code@latest"
         "codex"
