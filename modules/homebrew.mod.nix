@@ -20,6 +20,7 @@
 
       homebrew.casks = [
         "1password"
+        "1password-cli"
         "altserver"
         "chatgpt"
         "claude"
@@ -27,6 +28,7 @@
         "codex"
         "dotnet-sdk"
         "raycast"
+        "shottr"
         "tailscale-app"
         "thebrowsercompany-dia"
       ];

@@ -12,7 +12,7 @@
       system.defaults.NSGlobalDomain = {
         NSWindowShouldDragOnGesture = true;
         AppleEnableMouseSwipeNavigateWithScrolls = false;
-        AppleEnableSwipeNavigateWithScrolls = false;
+        AppleEnableSwipeNavigateWithScrolls = true;
 
         AppleSpacesSwitchOnActivate = false;
       };
