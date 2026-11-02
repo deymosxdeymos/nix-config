@@ -85,10 +85,19 @@ class Client:
             return json.loads(raw) if raw else {}
         except urllib.error.HTTPError as error:
             status = error.code
-            error.close()
-            if status == 401:
+            try:
+                failure = json.loads(error.read(4096))
+            except (OSError, ValueError):
+                failure = None
+            finally:
+                error.close()
+            code = failure.get("error") if isinstance(failure, dict) else None
+            if status == 401 or (status == 400 and code in ("ExpiredToken", "InvalidToken")):
                 self.token = None
-            raise TrackerError(f"AT Protocol request failed: {method} (HTTP {status})") from None
+            detail = f"HTTP {status}"
+            if code in ("ExpiredToken", "InvalidToken", "InvalidRequest", "InvalidSwap", "AuthRequired", "InsufficientScope"):
+                detail += f", {code}"
+            raise TrackerError(f"AT Protocol request failed: {method} ({detail})") from None
         except (OSError, ValueError) as error:
             raise TrackerError(f"AT Protocol request failed: {method}") from error
 

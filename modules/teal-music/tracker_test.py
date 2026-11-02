@@ -21,15 +21,18 @@ class Handler(BaseHTTPRequestHandler):
     record = None
     version = 0
     fail_auth = False
+    failure = None
 
     def do_POST(self):
         cls = type(self)
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
         method = self.path.rsplit("/", 1)[-1]
         cls.requests.append((method, body, self.headers.get("Authorization")))
-        if cls.fail_auth:
-            self.send_response(401)
+        if cls.fail_auth or cls.failure is not None:
+            status, body = cls.failure if cls.failure is not None else (401, "")
+            self.send_response(status)
             self.end_headers()
+            self.wfile.write(body.encode())
             return
         if method == "com.atproto.repo.putRecord":
             cls.version += 1
@@ -73,6 +76,7 @@ class TrackerTests(unittest.TestCase):
         Handler.record = None
         Handler.version = 0
         Handler.fail_auth = False
+        Handler.failure = None
         self.client = tracker.Client(
             f"http://127.0.0.1:{self.server.server_port}", "test.invalid", "test",
         )
@@ -110,6 +114,39 @@ class TrackerTests(unittest.TestCase):
             self.client.publish(TRACK, self.now)
         self.assertIsNone(self.client.token)
         self.assertEqual(len(Handler.requests), 1)
+
+    def test_http_400_expired_tokens_are_discarded_and_next_publish_can_reauthenticate(self):
+        for code in ("ExpiredToken", "InvalidToken"):
+            with self.subTest(code=code):
+                self.client.token = "expired-token"
+                Handler.requests = []
+                Handler.failure = (400, json.dumps({"error": code, "message": "private detail"}))
+                with self.assertRaisesRegex(tracker.TrackerError, f"HTTP 400, {code}"):
+                    self.client.publish(TRACK, self.now)
+                self.assertIsNone(self.client.token)
+                self.assertEqual(len(Handler.requests), 1)
+                self.assertIsNone(Handler.record)
+                Handler.failure = None
+                self.client.token = "renewed-token"
+                self.client.publish(TRACK, self.now)
+                self.assertEqual(Handler.requests[-1][2], "Bearer renewed-token")
+                self.assertEqual(Handler.record["item"]["trackName"], TRACK["trackName"])
+                self.client.clear()
+
+    def test_other_http_400_failures_do_not_invalidate_session_or_expose_response(self):
+        for body in (
+            json.dumps({"error": "InvalidRequest", "message": "private detail"}),
+            json.dumps({"error": "private detail"}),
+            "not JSON: private detail",
+            "[]",
+        ):
+            with self.subTest(body=body):
+                Handler.failure = (400, body)
+                with self.assertRaises(tracker.TrackerError) as raised:
+                    self.client.publish(TRACK, self.now)
+                self.assertEqual(self.client.token, "test-access-token")
+                self.assertNotIn("private detail", str(raised.exception))
+                self.assertIn("HTTP 400", str(raised.exception))
 
     def test_stopped_music_is_absence(self):
         self.assertIsNone(tracker.parse_track(None))
