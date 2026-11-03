@@ -148,6 +148,22 @@
         "type": "github"
       }
     },
+    "ghidra-nixpkgs": {
+      "locked": {
+        "lastModified": 1791445186,
+        "narHash": "sha256-YXlYnmCcqjwfWh8IuWm9fKkIM693AVS5wmwbnHNXmls=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "6641e07562b9a2d9ea67b331659fbdd42a686c3f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "6641e07562b9a2d9ea67b331659fbdd42a686c3f",
+        "type": "github"
+      }
+    },
     "git-hooks-nix": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -246,11 +262,11 @@
     "homebrew-anomalyco": {
       "flake": false,
       "locked": {
-        "lastModified": 1793573074,
-        "narHash": "sha256-yL1Ey/SVCVua21y0V9IoKNLGtflSNMBoe8tEqzEFXdI=",
+        "lastModified": 1793637877,
+        "narHash": "sha256-EqeNpa4cwsiUdB2hBZtqbkHaOk6wDLk169OS1AynLIs=",
         "owner": "anomalyco",
         "repo": "homebrew-tap",
-        "rev": "8ec31d23ef680c359fd33369fa12774fe76e49d3",
+        "rev": "eb95ba5bd1a0ec663b6db134119dfc28cf545633",
         "type": "github"
       },
       "original": {
@@ -429,6 +445,7 @@
       "inputs": {
         "determinate": "determinate",
         "flake-parts": "flake-parts_2",
+        "ghidra-nixpkgs": "ghidra-nixpkgs",
         "helix": "helix",
         "hjem": "hjem",
         "homebrew": "homebrew",

@@ -6,6 +6,7 @@
     {
       packages = [
         pkgs._7zz
+        pkgs.awscli2
         (pkgs.bun.overrideAttrs (finalAttrs: {
           version = "1.4.4";
           src = pkgs.fetchurl {
