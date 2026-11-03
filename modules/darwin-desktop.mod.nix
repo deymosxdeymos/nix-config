@@ -6,7 +6,7 @@
     {
       system.defaults.dock = {
         autohide = true;
-        showhidden = true;
+        showhidden = false;
 
         show-recents = false;
         mru-spaces = false;
@@ -54,7 +54,9 @@
         }
       ''}";
 
-      system.defaults.screencapture.location = "${config.users.users.${config.system.primaryUser}.home}/Pictures/Screenshots";
+      system.defaults.screencapture.location = "${
+        config.users.users.${config.system.primaryUser}.home
+      }/Pictures/Screenshots";
 
       system.defaults.finder = {
         AppleShowAllExtensions = true;
