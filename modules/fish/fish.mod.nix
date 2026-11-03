@@ -14,7 +14,16 @@
 
   flake.homeModules.default = self.homeModules.fish;
   flake.homeModules.fish =
-    { config, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    let
+      inherit (lib.attrsets) mapAttrsToList;
+      inherit (lib.strings) concatStringsSep escapeShellArg;
+    in
     {
       packages = [
         pkgs.eza
@@ -45,6 +54,12 @@
       '';
 
       xdg.config.files."fish/conf.d/env.fish".text = /* fish */ ''
+        ${
+          config.environment.sessionVariables
+          |> mapAttrsToList (name: value: "set --global --export ${name} ${escapeShellArg value}")
+          |> concatStringsSep "\n"
+        }
+
         fish_add_path --global --prepend "$HOME/.local/bin" "$CARGO_HOME/bin" "$GOPATH/bin" "$BUN_INSTALL/bin"
 
         set -l local_env "${config.xdg.config.directory}/fish/local-env.fish"
