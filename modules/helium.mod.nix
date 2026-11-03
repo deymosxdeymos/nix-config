@@ -46,7 +46,6 @@ let
           "https://raw.githubusercontent.com/DandelionSprout/adfilt/refs/heads/master/LegitimateURLShortener.txt"
           "https://raw.githubusercontent.com/yokoffing/filterlists/refs/heads/main/annoyance_list.txt"
           "https://raw.githubusercontent.com/yokoffing/filterlists/refs/heads/main/click2load.txt"
-          "https://raw.githubusercontent.com/yokoffing/filterlists/refs/heads/main/privacy_essentials.txt"
         ];
     in
     {
@@ -70,35 +69,17 @@ let
         filter (name: !(hasInfix "://" name || name == "user-filters" || hasAttr name assets)) filterLists
         |> foldr (name: warn "helium: unknown ublock filter list: ${name}") filterLists;
 
-      policy.toOverwrite.filters =
-        [
-          ''||youtube.com/shorts/$document,uritransform=/^https:\/\/(?:www\.|m\.)?youtube\.com\/shorts\/([^\/?#]+)/https:\/\/www.youtube.com\/watch?v=\$1/''
+      policy.toOverwrite.filters = [
+        "@@||google.com^"
+        "@@||googleapis.com^"
+        "@@||gstatic.com^"
+        "@@||googleusercontent.com^"
 
-          "@@||youtube.com/embed/$frame"
-          "@@||youtube-nocookie.com/embed/$frame"
-        ]
-        ++ [
-          "@@||reddit.com/media$document,uritransform"
-          "@@||reddit.com/video/$document,uritransform"
-          "@@||reddit.com/mod$document,uritransform"
-          "@@||reddit.com/poll$document,uritransform"
-          "@@||reddit.com/settings$document,uritransform"
-          "@@||reddit.com/topics$document,uritransform"
-          "@@||reddit.com/community-points$document,uritransform"
-          "@@||reddit.com/appeal$document,uritransform"
-          "@@||reddit.com/appeals$document,uritransform"
-          "@@||reddit.com/notifications$document,uritransform"
-          "@@||reddit.com/message/compose/$document,uritransform"
-          "@@||reddit.com/mail^$document,uritransform"
-          "@@||reddit.com/answers^$document,uritransform"
-          ''@@/^https:\/\/\w*\.?reddit\.com\/r\/[A-Za-z0-9_]+\/s\//$document,uritransform''
-          ''@@/^https:\/\/\w*\.?reddit\.com\/.*[?&]new_reddit=true(?:$|[&#])/$document,uritransform''
+        ''||youtube.com/shorts/$document,uritransform=/^https:\/\/(?:www\.|m\.)?youtube\.com\/shorts\/([^\/?#]+)/https:\/\/www.youtube.com\/watch?v=\$1/''
 
-          ''||reddit.com/gallery/$document,uritransform=/^https:\/\/(?:www\.|np\.|amp\.|i\.)?reddit\.com\/gallery\/(.*)/https:\/\/old.reddit.com\/comments\/\$1/''
-          ''||reddit.com^$document,uritransform=/^https:\/\/(?:www\.|np\.|amp\.|i\.)?reddit\.com\/(?!gallery\/)/https:\/\/old.reddit.com\//''
-
-          "old.reddit.com##:is(#eu-cookie-policy, #redesign-beta-optin-btn)"
-        ];
+        "@@||youtube.com/embed/$frame"
+        "@@||youtube-nocookie.com/embed/$frame"
+      ];
     };
 
   extensions.dearrow.id = "enamippconapkdmgfgjchkhakpfinmaj";
@@ -161,7 +142,9 @@ in
           files
           |> mapAttrsToList (
             name: value:
-            "/usr/bin/install -m 644 ${pkgs.writeText name <| toPlist { escape = true; } value} ${escapeShellArg "/Library/Managed Preferences/${name}"}"
+            "/usr/bin/install -m 644 ${
+              pkgs.writeText name <| toPlist { escape = true; } value
+            } ${escapeShellArg "/Library/Managed Preferences/${name}"}"
           )
           |> concatLines
         }
