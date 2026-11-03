@@ -13,8 +13,6 @@ in
       };
       home.users.deymos = { };
 
-      services.teal-music.enable = true;
-
       nixpkgs.hostPlatform = "aarch64-darwin";
       system.stateVersion = 6;
     };
