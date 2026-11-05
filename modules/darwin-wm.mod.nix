@@ -132,30 +132,6 @@
           };
         in
         {
-          "28" = hotkey "3" [
-            "command"
-            "shift"
-          ];
-          "29" = hotkey "3" [
-            "command"
-            "control"
-            "shift"
-          ];
-
-          "30" = hotkey "4" [
-            "command"
-            "shift"
-          ];
-          "31" = hotkey "4" [
-            "command"
-            "control"
-            "shift"
-          ];
-          "184" = hotkey "5" [
-            "command"
-            "shift"
-          ];
-
           "60" = hotkey "tab" [
             "super"
             "option"
@@ -187,6 +163,11 @@
 
           "25".enabled = 0;
           "26".enabled = 0;
+
+          "28".enabled = 0;
+          "29".enabled = 0;
+          "30".enabled = 0;
+          "31".enabled = 0;
 
           "32" = hotkey "up" <| singleton "control";
 
@@ -231,11 +212,15 @@
           "159".enabled = 0;
 
           "162".enabled = 0;
+          "163".enabled = 0;
 
           "164".enabled = 0;
+          "165".enabled = 0;
 
           "181".enabled = 0;
           "182".enabled = 0;
+
+          "184".enabled = 0;
 
           "190".enabled = 0;
 

@@ -82,7 +82,6 @@ let
       ];
     };
 
-  extensions.dearrow.id = "enamippconapkdmgfgjchkhakpfinmaj";
   extensions.sponsorblock.id = "mnjggcdmjocbbbhaepdhchncahnbgone";
 
   extensions.avec.id = "kggjnhfbblkeaobciljmjicfmmbgdhmk";

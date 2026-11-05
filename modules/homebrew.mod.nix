@@ -15,7 +15,7 @@
       homebrew.taps = attrNames config.nix-homebrew.taps;
 
       homebrew.onActivation.autoUpdate = false;
-      homebrew.onActivation.upgrade = false;
+      homebrew.onActivation.upgrade = true;
       homebrew.onActivation.cleanup = "none";
 
       homebrew.casks = [
@@ -30,7 +30,6 @@
         "raycast"
         "shottr"
         "tailscale-app"
-        "thebrowsercompany-dia"
       ];
 
       homebrew.brews = singleton "anomalyco/tap/opencode-v2";
