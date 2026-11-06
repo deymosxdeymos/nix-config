@@ -2,12 +2,25 @@
 {
   flake.darwinModules.default = self.darwinModules.fish;
   flake.darwinModules.fish =
-    { lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       inherit (lib.lists) singleton;
     in
     {
       programs.fish.enable = true;
+
+      programs.fish.shellInit = /* fish */ ''
+        if not contains /run/current-system/sw/bin $PATH
+            set fish_function_path ${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d $fish_function_path
+            fenv source ${config.system.build.setEnvironment}
+            set -e fish_function_path[1]
+        end
+      '';
 
       environment.shells = singleton pkgs.fish;
     };
