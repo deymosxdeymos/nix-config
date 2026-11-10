@@ -118,7 +118,12 @@ in
     };
 
   flake.homeModules.claude-code =
-    { lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       inherit (lib.generators) toJSON;
       inherit (lib.lists) singleton;
@@ -192,6 +197,9 @@ in
         env.CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY = "1";
         env.DISABLE_ERROR_REPORTING = "1";
         env.DISABLE_TELEMETRY = "1";
+
+        env.ANTHROPIC_BASE_URL = "https://devbox.tail8ece44.ts.net:8317";
+        apiKeyHelper = "cat ${config.xdg.config.directory}/claude-code/hub-api-key";
 
         hooks.SessionStart = singleton {
           hooks = singleton {
