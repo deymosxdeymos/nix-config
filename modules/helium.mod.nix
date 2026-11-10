@@ -119,6 +119,8 @@ in
       inherit (lib.lists) singleton;
       inherit (lib.strings) concatLines escapeShellArg;
 
+      managedPreferences = "/Library/Managed Preferences";
+
       files = {
         "net.imput.helium.plist" = policy;
       }
@@ -128,27 +130,52 @@ in
           id: extensionPolicy: { "net.imput.helium.extensions.${id}.plist" = extensionPolicy; }
         )
       );
-    in
-    {
-      homebrew.casks = singleton "helium-browser";
+      installPolicies = pkgs.writeShellScript "install-helium-policies" /* bash */ ''
+        changed=false
 
-      system.activationScripts.postActivation.text = /* bash */ ''
-        echo "installing helium policies..."
-
-        /bin/mkdir -p "/Library/Managed Preferences"
+        /bin/mkdir -p ${escapeShellArg managedPreferences}
 
         ${
           files
           |> mapAttrsToList (
             name: value:
-            "/usr/bin/install -m 644 ${
-              pkgs.writeText name <| toPlist { escape = true; } value
-            } ${escapeShellArg "/Library/Managed Preferences/${name}"}"
+            let
+              source = pkgs.writeText name <| toPlist { escape = true; } value;
+              target = escapeShellArg "${managedPreferences}/${name}";
+            in
+            /* bash */ ''
+              if ! /usr/bin/cmp --silent ${source} ${target}; then
+                /usr/bin/install -m 644 ${source} ${target}
+                changed=true
+              fi
+            ''
           )
           |> concatLines
         }
 
-        /usr/bin/killall cfprefsd || true
+        if [ "$changed" = true ]; then
+          uid=$(/usr/bin/id -u "$(/usr/bin/stat -f %Su /dev/console)")
+
+          if [ "$uid" != 0 ]; then
+            /bin/launchctl kickstart -k "gui/$uid/com.apple.cfprefsd.xpc.agent" || true
+          fi
+
+          /bin/launchctl kickstart -k system/com.apple.cfprefsd.xpc.daemon || true
+        fi
+      '';
+    in
+    {
+      homebrew.casks = singleton "helium-browser";
+
+      launchd.daemons.helium-policies.serviceConfig = {
+        ProgramArguments = singleton "${installPolicies}";
+        RunAtLoad = true;
+        WatchPaths = singleton managedPreferences;
+      };
+
+      system.activationScripts.postActivation.text = /* bash */ ''
+        echo "installing helium policies..."
+        ${installPolicies}
       '';
     };
 }
