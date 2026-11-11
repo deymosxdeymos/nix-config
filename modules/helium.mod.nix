@@ -168,7 +168,11 @@ in
       homebrew.casks = singleton "helium-browser";
 
       launchd.daemons.helium-policies.serviceConfig = {
-        ProgramArguments = singleton "${installPolicies}";
+        ProgramArguments = [
+          "/bin/sh"
+          "-c"
+          "/bin/sleep 5 && exec ${installPolicies}"
+        ];
         RunAtLoad = true;
         WatchPaths = singleton managedPreferences;
       };
