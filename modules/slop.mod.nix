@@ -185,7 +185,6 @@ in
         cleanupPeriodDays = 365 * 1000;
 
         model = "opus";
-        modelSettings.claude-opus-5-5.autoCompactWindow = "auto";
 
         permissions.defaultMode = "bypassPermissions";
         skipDangerousModePermissionPrompt = true;
@@ -197,9 +196,6 @@ in
         env.CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY = "1";
         env.DISABLE_ERROR_REPORTING = "1";
         env.DISABLE_TELEMETRY = "1";
-
-        env.ANTHROPIC_BASE_URL = "https://devbox.tail8ece44.ts.net:8317";
-        apiKeyHelper = "cat ${config.xdg.config.directory}/claude-code/hub-api-key";
 
         hooks.SessionStart = singleton {
           hooks = singleton {
