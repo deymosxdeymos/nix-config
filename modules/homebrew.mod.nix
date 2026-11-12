@@ -22,8 +22,6 @@
         "1password"
         "1password-cli"
         "altserver"
-        "chatgpt"
-        "claude"
         "claude-code@latest"
         "codex"
         "dotnet-sdk"
