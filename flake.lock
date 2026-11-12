@@ -91,6 +91,22 @@
         "url": "https://install.determinate.systems/determinate-nixd/tag/v3.24.2/x86_64-linux"
       }
     },
+    "diatweaks": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794885451,
+        "narHash": "sha256-OQRPMq24gIoeUq9HsTYrMQYRWrfXq6DZbjoWFhThjUs=",
+        "owner": "JaceThings",
+        "repo": "DiaTweaks",
+        "rev": "56b9192c025531733c4a5b6bedc7717d742b1811",
+        "type": "github"
+      },
+      "original": {
+        "owner": "JaceThings",
+        "repo": "DiaTweaks",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -444,6 +460,7 @@
     "root": {
       "inputs": {
         "determinate": "determinate",
+        "diatweaks": "diatweaks",
         "flake-parts": "flake-parts_2",
         "ghidra-nixpkgs": "ghidra-nixpkgs",
         "helix": "helix",

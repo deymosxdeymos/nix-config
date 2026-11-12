@@ -65,6 +65,11 @@
     url = "github:helix-editor/helix";
   };
 
+  inputs.diatweaks = {
+    url = "github:JaceThings/DiaTweaks";
+    flake = false;
+  };
+
   inputs.ublock = {
     url = "github:imputnet/uBlock";
     flake = false;
