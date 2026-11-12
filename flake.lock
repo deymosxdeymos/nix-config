@@ -192,11 +192,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1794324597,
-        "narHash": "sha256-vD2EBNmDfhDu8NwEUtpv5K8EWvXoYJC17Mj4lpooMW8=",
+        "lastModified": 1794837200,
+        "narHash": "sha256-kS7i/4f9CnHqOiJ8filFPnFvvrKJILiBjfbBE8R4gZc=",
         "owner": "helix-editor",
         "repo": "helix",
-        "rev": "57d864129eb54e1d4890a938e692ca465adaee3f",
+        "rev": "49986e6674e5658164a88f599ec8c822e62ad0db",
         "type": "github"
       },
       "original": {
@@ -212,11 +212,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794190356,
-        "narHash": "sha256-tttNqwFIXsClznNv3uEltACsfBm8xIDo9bPl+BHqYZc=",
+        "lastModified": 1794842388,
+        "narHash": "sha256-k/nDw1zTlCmhA2K3odt/gy4uDiS002x8Nc14lQxvpY8=",
         "owner": "feel-co",
         "repo": "hjem",
-        "rev": "28cec3017cc94842f919f8f294c8b7136216b79b",
+        "rev": "2f56c85f80a52c23fb3e956119ca80975a2b9ceb",
         "type": "github"
       },
       "original": {
@@ -246,11 +246,11 @@
     "homebrew-ampcode": {
       "flake": false,
       "locked": {
-        "lastModified": 1794371232,
-        "narHash": "sha256-GqOxKP2an6yYn81UT63wraTUx11QYsqZ/UgUltE8i6E=",
+        "lastModified": 1794875237,
+        "narHash": "sha256-T2x2HJ3CeJLQgMXDXbUg9wFCVd2ctVpnmCnLgWvqUGg=",
         "owner": "ampcode",
         "repo": "homebrew-tap",
-        "rev": "8260955b4260d5d99358d2bf6bb1bd4b0c6630c0",
+        "rev": "77c9c4603affce71b90e31f49192640ff3fa7a4d",
         "type": "github"
       },
       "original": {
@@ -262,11 +262,11 @@
     "homebrew-anomalyco": {
       "flake": false,
       "locked": {
-        "lastModified": 1794371794,
-        "narHash": "sha256-iT6T+rF8POf3d/f4aWPtGnyu7R2k2the91vT1YOojdc=",
+        "lastModified": 1794560026,
+        "narHash": "sha256-1E31lhXJUsOPAWjkqT7CGFelPfj4aQPmsgoV4Wcj47o=",
         "owner": "anomalyco",
         "repo": "homebrew-tap",
-        "rev": "52de872d467b6feff45485c3fc379a5fe8fbec9a",
+        "rev": "bace1e2c4dac9abffcccbdb507be2238379d1757",
         "type": "github"
       },
       "original": {
@@ -278,11 +278,11 @@
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1794371961,
-        "narHash": "sha256-924tkdUezQSL6QTi/SPWqydRNvIbM6/vNY8vGL05Owk=",
+        "lastModified": 1794884372,
+        "narHash": "sha256-O/HDGCKY7ye7AgJNJ+xGFsT+0K7a+cXG6NMDO9JRcz8=",
         "owner": "homebrew",
         "repo": "homebrew-cask",
-        "rev": "a3b6d7f902e61e49cc45f71dbed19c9b3ad48b4e",
+        "rev": "b9aac88a18c0fc2eaaf049a70c954318550fcc3b",
         "type": "github"
       },
       "original": {
@@ -294,11 +294,11 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1794372062,
-        "narHash": "sha256-YYyA7XnJ44ZGshGhm4wQJOswUh1F9lOWjrvXwN+AsMw=",
+        "lastModified": 1794887498,
+        "narHash": "sha256-KGs4zTyzHzSJwo7naLXRIi1Mm42lrK5ARKfOBlwBs98=",
         "owner": "homebrew",
         "repo": "homebrew-core",
-        "rev": "c5ad52394b1b9912cbd126d9cbb6bf6ad442cefe",
+        "rev": "4958f775c8df0f8882445d464de2c3178acfb8c6",
         "type": "github"
       },
       "original": {
@@ -427,11 +427,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1793977579,
-        "narHash": "sha256-WrSODdZFVIs/Hh2NzC0bY+ROByi0bATg8WfePX8dPj8=",
+        "lastModified": 1794644783,
+        "narHash": "sha256-3GnIGIy15bMduoS9RnWqKTmsJLWThla42UFtm0S7+us=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "4fe25e12eb9f4c744966dd3de5a05246cf098601",
+        "rev": "5d2b81a7a3be3e2f832879028e4d60abbf58e9a0",
         "type": "github"
       },
       "original": {
@@ -482,11 +482,11 @@
     "ublock": {
       "flake": false,
       "locked": {
-        "lastModified": 1793785783,
-        "narHash": "sha256-X/onSrsS1tXxH6pRCz5CZ2mSz6uG7mYwBx40A7fYiQo=",
+        "lastModified": 1794843146,
+        "narHash": "sha256-YgYFbuvpO2+BgrCH+wrSAwYp5vFUow1+S+q9Kl17/hA=",
         "owner": "imputnet",
         "repo": "uBlock",
-        "rev": "ec2787781dea26c1502a23f306a3b1dee457bb6d",
+        "rev": "5610378f651171b35422bd0d046b58df0072ec8b",
         "type": "github"
       },
       "original": {
