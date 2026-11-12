@@ -466,7 +466,7 @@
         git.push = "origin";
 
         signing.behavior = "drop";
-        git.sign-on-push = true;
+        revsets.git-sign-on-push = "~signed() & mine()";
 
         signing.backend = "ssh";
         signing.key = "~/.ssh/id_ed25519.pub";
