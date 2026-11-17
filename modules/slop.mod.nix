@@ -127,7 +127,8 @@ in
     let
       inherit (lib.generators) toJSON;
       inherit (lib.lists) singleton;
-      inherit (lib.meta) getExe;
+      inherit (lib.meta) getExe getExe';
+      inherit (lib.modules) mkIf;
 
       worktreeCreate = pkgs.writeShellApplication {
         name = "claude-worktree-create";
@@ -196,6 +197,9 @@ in
         env.CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY = "1";
         env.DISABLE_ERROR_REPORTING = "1";
         env.DISABLE_TELEMETRY = "1";
+        env.ANTHROPIC_BASE_URL = mkIf pkgs.stdenv.hostPlatform.isDarwin "https://devbox.tail8ece44.ts.net:8317";
+        env.ANTHROPIC_API_KEY = mkIf pkgs.stdenv.hostPlatform.isDarwin "";
+        apiKeyHelper = mkIf pkgs.stdenv.hostPlatform.isDarwin "${getExe' pkgs.coreutils "cat"} ${config.xdg.config.directory}/cliproxy-api/client-key";
 
         hooks.SessionStart = singleton {
           hooks = singleton {

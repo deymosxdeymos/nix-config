@@ -32,8 +32,6 @@
 
       homebrew.brews = singleton "anomalyco/tap/opencode-v2";
 
-      homebrew.masApps.Amphetamine = 937984704;
-
       nix-homebrew = {
         enable = true;
 
