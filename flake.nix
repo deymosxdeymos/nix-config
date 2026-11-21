@@ -61,18 +61,8 @@
     flake = false;
   };
 
-  inputs.homebrew-pond = {
-    url = "github:raphaelsalaja/pond";
-    flake = false;
-  };
-
   inputs.helix = {
     url = "github:helix-editor/helix";
-  };
-
-  inputs.diatweaks = {
-    url = "github:JaceThings/DiaTweaks";
-    flake = false;
   };
 
   inputs.ublock = {
