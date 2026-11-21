@@ -1,26 +1,28 @@
-{ self, ... }:
+{ self, inputs, ... }:
 {
   flake.homeModules.default = self.homeModules.skills;
   flake.homeModules.skills =
     { config, lib, ... }:
     let
-      inherit (lib.attrsets) genAttrs' nameValuePair;
+      inherit (lib.attrsets) filterAttrs mapAttrs' nameValuePair;
+      inherit (lib.filesystem) readDir;
     in
     {
       files =
-        genAttrs'
-          [
-            "babysit-pr"
-            "full-send"
-            "full-stop"
-            "jj-stack"
-            "sol-loop"
-          ]
-          (
-            name:
+        (
+          readDir "${inputs.tstack}/skills"
+          |> filterAttrs (_: type: type == "directory")
+          |> mapAttrs' (
+            name: _:
             nameValuePair ".agents/skills/${name}" {
-              source = "${config.directory}/Developer/skills/${name}";
+              source = "${inputs.tstack}/skills/${name}";
             }
-          );
+          )
+        )
+        // {
+          ".agents/skills/jj-stack".source = "${config.directory}/Developer/skills/jj-stack";
+          ".agents/skills/gamgen-boat".source = "${config.directory}/Developer/skills/gamgen-boat";
+          ".agents/skills/council".source = "${config.directory}/Developer/skills/council";
+        };
     };
 }

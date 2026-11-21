@@ -1,38 +1,9 @@
 { self, lib, ... }:
 let
-  inherit (lib.lists) concatMap;
+  inherit (lib.lists) concatMap singleton;
   inherit (lib.strings) concatLines;
 
   forbidden.rules = [
-    {
-      commands = [
-        "git add*"
-        "git am*"
-        "git apply*"
-        "git branch -d*"
-        "git branch -D*"
-        "git branch --delete*"
-        "git checkout*"
-        "git cherry-pick*"
-        "git clean*"
-        "git commit*"
-        "git init*"
-        "git merge*"
-        "git mv*"
-        "git pull*"
-        "git push*"
-        "git rebase*"
-        "git reset*"
-        "git restore*"
-        "git revert*"
-        "git rm*"
-        "git stash*"
-        "git switch*"
-        "git tag*"
-        "git worktree*"
-      ];
-      justification = "Use `jj` for version control. Read-only `git` (log, diff, show, status, blame, merge-base, fetch) is fine.";
-    }
     {
       commands = [
         "find /nix/store"
@@ -45,14 +16,9 @@ let
   ];
 
   instructions =
-    [
-      "In a repository without a `.jj` directory, run `jj git init --colocate` before changing history."
-      "Use `jj describe`, `jj new`, `jj commit`, `jj squash`, `jj bookmark` and `jj git push` instead of their git equivalents."
-      "Nix flakes only see files git knows about, so run `jj new` after creating files before evaluating a flake."
-      "Prefer nix3 commands over nix2 commands."
-    ]
+    singleton "Prefer nix3 commands over nix2 commands."
     ++ (forbidden.rules |> map ({ justification, ... }: justification))
-    |> map (instruction: ''
+    |> map (instruction: /* markdown */ ''
       - ${instruction}
     '')
     |> concatLines;
@@ -118,56 +84,10 @@ in
     };
 
   flake.homeModules.claude-code =
-    { lib, pkgs, ... }:
+    { lib, ... }:
     let
       inherit (lib.generators) toJSON;
       inherit (lib.lists) singleton;
-      inherit (lib.meta) getExe;
-
-      worktreeCreate = pkgs.writeShellApplication {
-        name = "claude-worktree-create";
-        runtimeInputs = [
-          pkgs.git
-          pkgs.jq
-          pkgs.jujutsu
-        ];
-        text = /* bash */ ''
-          input=$(cat)
-          name=$(jq --raw-output .name <<< "$input")
-          cd "$(jq --raw-output .cwd <<< "$input")"
-
-          if root=$(jj workspace root 2>/dev/null); then
-            destination="$(dirname "$root")/$(basename "$root")-$name"
-            jj workspace add --name "$name" "$destination" >&2
-          else
-            root=$(git rev-parse --show-toplevel)
-            destination="$root/.claude/worktrees/$name"
-            git worktree add -b "worktree-$name" "$destination" >&2
-          fi
-
-          echo "$destination"
-        '';
-      };
-
-      worktreeRemove = pkgs.writeShellApplication {
-        name = "claude-worktree-remove";
-        runtimeInputs = [
-          pkgs.git
-          pkgs.jq
-          pkgs.jujutsu
-        ];
-        text = /* bash */ ''
-          path=$(jq --raw-output .worktree_path)
-
-          if [ -d "$path/.jj" ]; then
-            (cd "$path" && jj workspace forget) >&2
-            rm -rf "$path"
-          else
-            git -C "$path" worktree remove --force "$path" >&2
-            git branch -D "worktree-$(basename "$path")" >&2 || true
-          fi
-        '';
-      };
     in
     {
       xdg.config.files."claude-code/CLAUDE.md".text = instructions;
@@ -186,8 +106,11 @@ in
         permissions.deny =
           forbidden.rules |> concatMap (rule: rule.commands |> map (command: "Bash(${command})"));
 
+        autoMemoryEnabled = false;
+
         syncClaudeAiPlugins = false;
         syncClaudeAiSkills = false;
+
         env.CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY = "1";
         env.DISABLE_ERROR_REPORTING = "1";
 
@@ -196,18 +119,6 @@ in
             type = "command";
             command = "/bin/sh -c 'rex __internal session-start --agent claude 2>/dev/null || true'";
             timeout = 5;
-          };
-        };
-        hooks.WorktreeCreate = singleton {
-          hooks = singleton {
-            type = "command";
-            command = getExe worktreeCreate;
-          };
-        };
-        hooks.WorktreeRemove = singleton {
-          hooks = singleton {
-            type = "command";
-            command = getExe worktreeRemove;
           };
         };
 

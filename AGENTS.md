@@ -1,7 +1,3 @@
-# Version Control
-
-Never use `git`. Instead of `git add`, use `jj file track`.
-
 # Development Rules
 
 - Never `find /nix/store` or anything equivalent. Prefer using

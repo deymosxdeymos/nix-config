@@ -42,6 +42,10 @@
 
   inputs.homebrew = {
     url = "github:zhaofengli/nix-homebrew";
+    inputs.brew-src = {
+      url = "github:Homebrew/brew";
+      flake = false;
+    };
   };
   inputs.homebrew-core = {
     url = "github:homebrew/homebrew-core";
@@ -63,6 +67,11 @@
 
   inputs.helix = {
     url = "github:helix-editor/helix";
+  };
+
+  inputs.tstack = {
+    url = "github:t3dotgg/tstack";
+    flake = false;
   };
 
   inputs.ublock = {
